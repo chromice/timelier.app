@@ -98,7 +98,7 @@ gulp.task('build:styles', function () {
 			browsers: ['last 2 versions', 'Explorer >= 8'],
 			cascade: false
 		}))
-		.pipe(rename('main.css'))
+		.pipe(rename('styles.css'))
 		.pipe(sourcemaps.write('./', {
 			sourceMappingURLPrefix: asset_root
 		}))
@@ -122,10 +122,10 @@ gulp.task('build:scripts', ['lint:scripts'], function () {
 	
 	return gulp.src(script_paths)
 		.pipe(sourcemaps.init())
-		.pipe(concat('main.js'))
-		.pipe(gulp.dest(destination_dir))
+		.pipe(concat('scripts.js'))
+		// .pipe(gulp.dest(destination_dir))
 		.pipe(uglify())
-		.pipe(rename('main.min.js'))
+		.pipe(rename('scripts.js'))
 		.pipe(sourcemaps.write('./', {
 			sourceMappingURLPrefix: asset_root
 		}))
