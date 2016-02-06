@@ -19,6 +19,26 @@ var TimerModel = Backbone.Model.extend({
 		
 		Backbone.Model.apply(this, arguments);
 	},
+	
+	loggedOnDate: function (date) {
+		var entries = this.entries.filter(function (entry) {
+				return timedate(entry.get('logged_on')) === timedate(date);
+			}),
+			logged = _.reduce(entries, function (memo, entry) {
+				return memo + entry.get('value');
+			}, 0),
+			started_on = this.get('started_on');
+		
+		
+		if (started_on) {
+			var start = new Date(started_on),
+				now = new Date();
+			
+			logged+= Math.ceil((now.getTime() - start.getTime()) / 1000);
+		}
+		
+		return logged;
+	},
 });
 
 var EntryModel = Backbone.Model.extend({
@@ -33,18 +53,6 @@ var EntryModel = Backbone.Model.extend({
 	},
 });
 
-var DateModel = Backbone.Model.extend({
-	constructor: function(attributes) {
-		// Make sure id is a date string
-		var date = attributes.id || new Date();
-		attributes.id = pad(date.getFullYear(), 4) + '-' + pad(date.getMonth(), 2) + '-' + pad(date.getDate(), 2);
-		
-		this.entries = new EntryCollection();
-		
-		Backbone.Model.apply(this, arguments);
-	},
-	sync: noSync,
-});
 
 // ===============
 // = Collections =
@@ -52,6 +60,11 @@ var DateModel = Backbone.Model.extend({
 
 var TimerCollection = Backbone.Collection.extend({
 	model: TimerModel,
+	loggedOnDate: function (date) {
+		return this.reduce(function (memo, entry) {
+			return memo + entry.loggedOnDate(date);
+		}, 0);
+	}
 }, {
 	all: function () {
 		return boostrapTimerCollection();
@@ -60,11 +73,6 @@ var TimerCollection = Backbone.Collection.extend({
 
 var EntryCollection = Backbone.Collection.extend({
 	model: EntryModel,
-});
-
-var DateCollection = Backbone.Collection.extend({
-	model: DateModel,
-	sync: noSync,
 });
 
 // ==============
@@ -124,9 +132,17 @@ var CalendarPane = Backbone.View.extend({
 	
 	initialize: function () {
 		this.timers = TimerCollection.all();
-		console.log(this.timers);
 		
-		this.calendar = new DateCollection();
+		this.timers.each(function (timer) {
+			if (timer.get('started_on')) {
+				this.addTimerToDate(timer, timer.get('started_on'));
+			}
+			timer.entries.each(function (entry) {
+				this.addTimerToDate(timer, entry.get('logged_on'));
+			}, this);
+		}, this);
+		
+		this.render();
 	},
 	
 	render: function () {
@@ -135,6 +151,10 @@ var CalendarPane = Backbone.View.extend({
 				'<h1>Timer</h1>' +
 				'<button>Start new</button>' +
 			'</header>');
+			
+		_.each(this.dates, function (date) {
+			this.$el.append(date.render());
+		}, this);
 		
 		return this.$el;
 	},
@@ -148,14 +168,99 @@ var CalendarPane = Backbone.View.extend({
 		
 		console.log(this.timers);
 	},
+	
+	/* \\ -^_^- // */
+	
+	dates: [],
+	
+	addTimerToDate: function (timer, date) {
+		var id = this._dateId(date),
+			view = _.findWhere(this.dates, {'id' : id});
+		
+		if (view === undefined) {
+			view = new CalendarDateView({
+				id: id,
+				collection: new TimerCollection(),
+			});
+			
+			this.dates.push(view);
+			_.sortBy(this.dates, function (date) {
+				return date;
+			});
+		}
+		
+		view.collection.add(timer);
+	},
+	
+	_dateId: function (date) {
+		return 'd' + timedate(date);
+	}
 });
 
 var CalendarDateView = Backbone.View.extend({
 	tagName: 'section',
+	
+	initialize: function() {
+		this.date = new Date(this.id.substr(1));
+	},
+	
+	render: function () {
+		var logged = this.collection.loggedOnDate(this.date);
+		
+		this.$el.empty()
+			.append('<header>' +
+				'<h2><time datetime="' + this.timedate() + '">' + this.day() + '</time></h2>' +
+				'<p><time datetime="' + duration(logged, true) + '">' + duration(logged) + '</time> logged</p>' +
+			'</header>');
+			
+		this.collection.each(function (timer) {
+			var view = new TimerView({
+				model: timer,
+				className: this.id,
+			});
+			this.$el.append(view.render());
+		}, this);
+		
+		return this.$el;
+	},
+	
+	timedate: function () {
+		return timedate(this.date);
+	},
+	
+	day: function () {
+		var today = new Date(),
+			yesterday = new Date();
+			
+		yesterday.setDate(today.getDate() - 1);
+		
+		if (timedate(today) === this.timedate()) {
+			return 'Today';
+		} else if (timedate(yesterday) === this.timedate()) {
+			return 'Yesterday';
+		}
+		
+		// FIXME: Pretty date
+		return this.date + '';
+	}
 });
 
 var TimerView = Backbone.View.extend({
 	tagName: 'article',
+	
+	initialize: function () {
+		this.date = new Date(this.className.substr(1));
+	},
+	
+	render: function () {
+		var logged = this.model.loggedOnDate(this.date);
+		
+		return this.$el.html(
+			'<h3>' + this.model.get('description') + '</h3>' +
+			'<p><time datetime="' + duration(logged, true) + '">' + duration(logged) + '</time> logged</p>' +
+			'<button>Start</button>'
+		);
+	}
 });
 
 
@@ -249,6 +354,22 @@ function pad(n, width, z) {
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
+function timedate(date) {
+	date = _.isDate(date) ? date : new Date(date);
+	return date.getFullYear() + '-' + pad(date.getMonth() + 1, 2) + '-' + pad(date.getDate(), 2);
+}
+
+function duration(seconds, machine) {
+	var minutes = Math.floor(seconds / 60),
+		hours = Math.floor(minutes / 60);
+	
+	if (machine) {
+		return 'PT' + hours + 'H' + (minutes % 60) + 'M';
+	}
+	
+	return hours + ':' + pad(minutes % 60, 2);
+}
+
 function noSync(method, model, options) {
 	var id = model.id || Math.floor(Math.random() * 100000);
 	options.success({id: id}, 'status', {});
@@ -319,7 +440,7 @@ function boostrapTimerCollection () {
 			'description': 'Making music',
 			'entries': [
 				{
-					'logged_on': '2016-02-05T22:15:00.000Z',
+					'logged_on': '2016-02-06T22:15:00.000Z',
 					'manually': true,
 					'value': 31 * 60,
 				},
