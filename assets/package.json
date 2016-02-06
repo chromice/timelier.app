@@ -1,0 +1,32 @@
+{
+  "name": "Kickass",
+  "version": "0.0.1",
+  "description": "Kickstarting Assets",
+  "main": "gulpfile.js",
+  "directories": {},
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.8.11",
+    "gulp-autoprefixer": "^2.2.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-jshint": "^1.9.2",
+    "gulp-less": "^3.0.1",
+    "gulp-livereload": "^3.8.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-sourcemaps": "^1.5.0",
+    "gulp-uglify": "^1.1.0",
+    "gulp-util": "^3.0.4",
+    "jshint-stylish": "^2.0.0",
+    "node-notifier": "^4.2.1",
+    "open": "0.0.5"
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/chromice/kickass.git"
+  },
+  "author": "Anton Muraviev <anton@colourandthing.com>",
+  "license": "ISC"
+}
