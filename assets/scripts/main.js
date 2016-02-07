@@ -86,6 +86,18 @@ var EntryModel = Backbone.Model.extend({
 
 var TimerCollection = Backbone.Collection.extend({
 	model: TimerModel,
+	comparator: function (timer) {
+		var started = timer.get('started_on'),
+			entry = timer.entries.first();
+		
+		if (started) {
+			started = new Date(started);
+			return started.getTime() * -1;
+		} else if (entry) {
+			entry = new Date(entry.get('logged_on'));
+			return entry.getTime() * -1;
+		}
+	},
 	
 	// -------------- //
 	
@@ -102,7 +114,12 @@ var TimerCollection = Backbone.Collection.extend({
 
 var EntryCollection = Backbone.Collection.extend({
 	model: EntryModel,
+	comparator: function (entry) {
+		var logged_on = new Date(entry.get('logged_on'));
+		return logged_on.getTime() * -1;
+	}
 });
+
 
 // ==============
 // = Components =
