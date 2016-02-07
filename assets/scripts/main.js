@@ -20,6 +20,8 @@ var TimerModel = Backbone.Model.extend({
 		Backbone.Model.apply(this, arguments);
 	},
 	
+	/* \\ -^_^- // */
+	
 	loggedOnDate: function (date) {
 		var entries = this.entries.filter(function (entry) {
 				return timedate(entry.get('logged_on')) === timedate(date);
@@ -28,7 +30,6 @@ var TimerModel = Backbone.Model.extend({
 				return memo + entry.get('value');
 			}, 0),
 			started_on = this.get('started_on');
-		
 		
 		if (started_on) {
 			var start = new Date(started_on),
@@ -60,6 +61,9 @@ var EntryModel = Backbone.Model.extend({
 
 var TimerCollection = Backbone.Collection.extend({
 	model: TimerModel,
+	
+	/* \\ -^_^- // */
+	
 	loggedOnDate: function (date) {
 		return this.reduce(function (memo, entry) {
 			return memo + entry.loggedOnDate(date);
@@ -83,7 +87,7 @@ var EntryCollection = Backbone.Collection.extend({
 // - Main component -
 // ------------------
 
-var AppComponent = Backbone.View.extend({
+var AppContainer = Backbone.View.extend({
 	el: 'body',
 	
 	initialize: function (options) {
@@ -161,24 +165,14 @@ var CalendarPane = Backbone.View.extend({
 	
 	/* \\ -^_^- // */
 	
-	startNewTimer: function (e) {
-		// TODO: Disable function for a second to prevent accidental double entry.
-		
-		this.timers.add({});
-		
-		console.log(this.timers);
-	},
-	
-	/* \\ -^_^- // */
-	
 	dates: [],
 	
 	addTimerToDate: function (timer, date) {
-		var id = this._dateId(date),
+		var id = TimerListView.dateID(date),
 			view = _.findWhere(this.dates, {'id' : id});
 		
 		if (view === undefined) {
-			view = new CalendarDateView({
+			view = new TimerListView({
 				id: id,
 				collection: new TimerCollection(),
 			});
@@ -192,12 +186,18 @@ var CalendarPane = Backbone.View.extend({
 		view.collection.add(timer);
 	},
 	
-	_dateId: function (date) {
-		return 'd' + timedate(date);
-	}
+	/* \\ -^_^- // */
+	
+	startNewTimer: function (e) {
+		// TODO: Disable function for a second to prevent accidental double entry.
+		
+		this.timers.add({});
+		
+		console.log(this.timers);
+	},
 });
 
-var CalendarDateView = Backbone.View.extend({
+var TimerListView = Backbone.View.extend({
 	tagName: 'section',
 	
 	initialize: function() {
@@ -214,7 +214,7 @@ var CalendarDateView = Backbone.View.extend({
 			'</header>');
 			
 		this.collection.each(function (timer) {
-			var view = new TimerView({
+			var view = new TimerItemView({
 				model: timer,
 				className: this.id,
 			});
@@ -223,6 +223,8 @@ var CalendarDateView = Backbone.View.extend({
 		
 		return this.$el;
 	},
+	
+	/* \\ -^_^- // */
 	
 	timedate: function () {
 		return timedate(this.date);
@@ -243,9 +245,17 @@ var CalendarDateView = Backbone.View.extend({
 		// FIXME: Pretty date
 		return this.date + '';
 	}
+}, {
+	dateID: function (date) {
+		return 'd' + timedate(date);
+	},
 });
 
-var TimerView = Backbone.View.extend({
+var CalendarDateLabel = Backbone.View.extend({
+	tagName: 'time',
+});
+
+var TimerItemView = Backbone.View.extend({
 	tagName: 'article',
 	
 	initialize: function () {
@@ -257,10 +267,30 @@ var TimerView = Backbone.View.extend({
 		
 		return this.$el.html(
 			'<h3>' + this.model.get('description') + '</h3>' +
-			'<p><time datetime="' + duration(logged, true) + '">' + duration(logged) + '</time> logged</p>' +
+			'<time datetime="' + duration(logged, true) + '">' + duration(logged) + 'logged</time>' +
 			'<button>Start</button>'
 		);
 	}
+});
+
+var TimerStartButton = Backbone.View.extend({
+	tagName: 'button',
+	
+	initialize: function () {
+		// this.model.
+	},
+});
+
+var TimerDescriptionLabel = Backbone.View.extend({
+	tagName: 'h3',
+});
+
+var TimerValueLabel = Backbone.View.extend({
+	tagName: 'time',
+	
+	initialize: function () {
+		// this.model || this.collection
+	},
 });
 
 
@@ -277,6 +307,7 @@ var DescriptionPane = Backbone.View.extend({
 	},
 });
 
+
 // -------------------
 // - Time components -
 // -------------------
@@ -291,12 +322,11 @@ var TimePane = Backbone.View.extend({
 });
 
 
+// ========================
+// = Application (router) =
+// ========================
 
-// ==========
-// = Router =
-// ==========
-
-var Router = Backbone.Router.extend({
+var Application = Backbone.Router.extend({
 	routes: {
 		'': 'main',
 		'description/:id': 'description',
@@ -304,27 +334,29 @@ var Router = Backbone.Router.extend({
 	},
 	
 	initialize: function () {
-		this.app = new AppComponent({
+		this.application = new AppContainer({
 			router: this,
 		});
 	},
 	
+	/* \\ -^_^- // */
+	
 	main: function () {
 		console.log('List all timers');
 		
-		this.app.showCalendar();
+		this.application.showCalendar();
 	},
 	
 	description: function (id) {
 		console.log('Edit details for timer #' + id);
 		
-		this.app.showDescripion(id);
+		this.application.showDescripion(id);
 	},
 	
 	time: function (id, date) {
 		console.log('Change logged time for timer #' + id);
 		
-		this.app.showTime(id, date);
+		this.application.showTime(id, date);
 	},
 });
 
@@ -333,13 +365,14 @@ var Router = Backbone.Router.extend({
 // = Main =
 // ========
 
-// Punch sync out
-Backbone.sync = noSync;
-
-// Start application
 $(function () {
-	var app = new Router();
-
+	// Create application
+	var app = new Application();
+	
+	// Knock sync out
+	Backbone.sync = noSync;
+	
+	// Start application
 	Backbone.history.start();
 });
 
