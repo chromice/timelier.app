@@ -308,7 +308,7 @@ var CalendarDateLabel = DateSpecificView.extend({
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
-		Clock.on('tick:date', this.render, this);
+		Clock.on('tick:day', this.render, this);
 	},
 	
 	render: function () {
@@ -326,19 +326,22 @@ var CalendarDateLabel = DateSpecificView.extend({
 	},
 	
 	label: function () {
-		var today = new Date(),
-			yesterday = new Date();
-		
-		yesterday.setDate(today.getDate() - 1);
+		var dayToday = Math.floor(Clock.now.getTime() / 86400 / 1000),
+			dayThen = Math.floor(this.date.getTime() / 86400 / 1000);
+			daysAgo = dayToday - dayThen;
 	
-		if (datetime(today) === this.datetime()) {
+		if (daysAgo === 0) {
 			return 'Today';
-		} else if (datetime(yesterday) === this.datetime()) {
+		} else if (daysAgo === 1) {
 			return 'Yesterday';
+		} else if ((Clock.now.getProperDay() - daysAgo) >= 0) {
+			return this.date.getDayName();
+		} else if ((Clock.now.getProperDay() - daysAgo) >= -7) {
+			return 'Last ' + this.date.getDayName();
 		}
 	
 		// FIXME: Prettify the date!
-		return this.date + '';
+		return this.date.getDayName() + ', ' + this.date.getDate() + ' ' + this.date.getMonthName() + ' ' + this.date.getFullYear();
 	},
 });
 
@@ -386,6 +389,7 @@ var TimerStartButton = DateSpecificView.extend({
 	},
 	
 	// -------------- //
+	
 	toggle: function (e) {
 		this.model.toggle();
 	},
@@ -418,7 +422,7 @@ var TimerValueLabel = DateSpecificView.extend({
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
-		Clock.on('tick:second', this.render, this);
+		Clock.on('tick:minute', this.render, this);
 	},
 	
 	render: function () {
@@ -446,10 +450,10 @@ var TimerValueLabel = DateSpecificView.extend({
 			hours = Math.floor(minutes / 60);
 	
 		if (machine) {
-			return 'PT' + hours + 'H' + (minutes % 60) + 'M' + (seconds % 60) + 'S';
+			return 'PT' + hours + 'H' + (minutes % 60) + 'M'/* + (seconds % 60) + 'S'*/;
 		}
 	
-		return hours + ':' + pad(minutes % 60, 2) + ':' + pad(seconds % 60, 2);
+		return hours + ':' + pad(minutes % 60, 2)/* + ':' + pad(seconds % 60, 2)*/;
 	}
 });
 
@@ -563,12 +567,37 @@ setInterval(_.bind(function () {
 		this.trigger('tick tick:second');
 	}
 	
+	if (this.second != Clock.now.getMinutes()) {
+		this.second = Clock.now.getMinutes();
+		this.trigger('tick tick:minute');
+	}
+	
 	if (this.date != Clock.now.getDate()) {
 		this.date = Clock.now.getDate();
-		this.trigger('tick tick:date');
+		this.trigger('tick tick:day');
 	}
-}, Clock), 25);
+}, Clock), 250);
 
+// --------
+// - Date -
+// --------
+
+_.extend(Date.prototype, {
+	_en_weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+	_en_months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+	
+	getProperDay: function () {
+		var day = this.getDay();
+		
+		return day === 0 ? 6 : (day - 1);
+	},
+	getDayName: function () {
+		return this._en_weekdays[this.getProperDay()];
+	},
+	getMonthName: function () {
+		return this._en_months[this.getProperDay()];
+	},
+});
 
 // ---------------------
 // - Utility functions -
@@ -671,7 +700,17 @@ function boostrapTimerCollection () {
 					'value': 55 * 60,
 				},
 				{
-					'logged_on': '2016-02-05T13:22:00.000Z',
+					'logged_on': '2016-02-01T13:22:00.000Z',
+					'manually': false,
+					'value': 200 * 60,
+				},
+				{
+					'logged_on': '2016-01-31T13:22:00.000Z',
+					'manually': false,
+					'value': 200 * 60,
+				},
+				{
+					'logged_on': '2016-01-24T13:22:00.000Z',
 					'manually': false,
 					'value': 200 * 60,
 				},
