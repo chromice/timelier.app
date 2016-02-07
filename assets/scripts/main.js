@@ -20,11 +20,11 @@ var TimerModel = Backbone.Model.extend({
 		Backbone.Model.apply(this, arguments);
 	},
 	
-	/* \\ -^_^- // */
+	// -------------- //
 	
 	loggedOnDate: function (date) {
 		var entries = this.entries.filter(function (entry) {
-				return timedate(entry.get('logged_on')) === timedate(date);
+				return datetime(entry.get('logged_on')) === datetime(date);
 			}),
 			logged = _.reduce(entries, function (memo, entry) {
 				return memo + entry.get('value');
@@ -62,7 +62,7 @@ var EntryModel = Backbone.Model.extend({
 var TimerCollection = Backbone.Collection.extend({
 	model: TimerModel,
 	
-	/* \\ -^_^- // */
+	// -------------- //
 	
 	loggedOnDate: function (date) {
 		return this.reduce(function (memo, entry) {
@@ -101,13 +101,15 @@ var AppContainer = Backbone.View.extend({
 	},
 	
 	render: function () {
-		return this.$el.empty()
-			.append(this.calendar.render())
-			.append(this.description.render())
-			.append(this.time.render());
+		this.$el.empty()
+			.append(this.calendar.render().$el)
+			.append(this.description.render().$el)
+			.append(this.time.render().$el);
+		
+		return this;
 	},
 	
-	/* \\ -^_^- // */
+	// -------------- //
 	
 	showCalendar: function () {
 		
@@ -145,8 +147,6 @@ var CalendarPane = Backbone.View.extend({
 				this.addTimerToDate(timer, entry.get('logged_on'));
 			}, this);
 		}, this);
-		
-		this.render();
 	},
 	
 	render: function () {
@@ -157,36 +157,38 @@ var CalendarPane = Backbone.View.extend({
 			'</header>');
 			
 		_.each(this.dates, function (date) {
-			this.$el.append(date.render());
+			this.$el.append(date.render().$el);
 		}, this);
 		
-		return this.$el;
+		return this;
 	},
 	
-	/* \\ -^_^- // */
+	// -------------- //
 	
 	dates: [],
 	
 	addTimerToDate: function (timer, date) {
-		var id = TimerListView.dateID(date),
+		var id = TimerListView.dateToId(date),
 			view = _.findWhere(this.dates, {'id' : id});
 		
 		if (view === undefined) {
 			view = new TimerListView({
 				id: id,
+				date: date,
 				collection: new TimerCollection(),
 			});
 			
 			this.dates.push(view);
-			_.sortBy(this.dates, function (date) {
-				return date;
+			
+			_.sortBy(this.dates, function (view) {
+				return view.date.getTime();
 			});
 		}
 		
 		view.collection.add(timer);
 	},
 	
-	/* \\ -^_^- // */
+	// -------------- //
 	
 	startNewTimer: function (e) {
 		// TODO: Disable function for a second to prevent accidental double entry.
@@ -197,99 +199,149 @@ var CalendarPane = Backbone.View.extend({
 	},
 });
 
-var TimerListView = Backbone.View.extend({
+var DateSpecificView = Backbone.View.extend({
+	initialize: function(options) {
+		this.date = _.isDate(options.date) ? options.date : new Date(options.date);
+	},
+});
+
+var TimerListView = DateSpecificView.extend({
 	tagName: 'section',
 	
-	initialize: function() {
-		this.date = new Date(this.id.substr(1));
+	initialize: function () {
+		DateSpecificView.prototype.initialize.apply(this, arguments);
+		
+		this.dateLabel = new CalendarDateLabel({date: this.date});
+		this.totalLogged = new TimerValueLabel({date: this.date, collection: this.collection});
+		this.timers = [];
 	},
 	
 	render: function () {
-		var logged = this.collection.loggedOnDate(this.date);
+		this.$el.empty();
 		
-		this.$el.empty()
-			.append('<header>' +
-				'<h2><time datetime="' + this.timedate() + '">' + this.day() + '</time></h2>' +
-				'<p><time datetime="' + duration(logged, true) + '">' + duration(logged) + '</time> logged</p>' +
-			'</header>');
+		var label = $('<h2>').appendTo(this.$el),
+			logged = $('<p> logged</p>').appendTo(this.$el);
 			
+		label.prepend(this.dateLabel.render().$el);
+		logged.prepend(this.totalLogged.render().$el);
+		
+		this.$el.wrapAll('<header>');
+		
 		this.collection.each(function (timer) {
-			var view = new TimerItemView({
-				model: timer,
-				className: this.id,
-			});
-			this.$el.append(view.render());
+			var view = new TimerItemView({date: this.date, model: timer});
+			
+			this.timers.push(view);
+			this.$el.append(view.render().$el);
 		}, this);
 		
-		return this.$el;
+		return this;
+	},
+}, {
+	idPrefix: 'd-',
+	
+	dateToId: function (date) {
+		return this.idPrefix + datetime(date);
 	},
 	
-	/* \\ -^_^- // */
+	idToDate: function (id) {
+		return id ? new Date(id.substr(this.idPrefix.length)) : new Date();
+	},
+});
+
+var CalendarDateLabel = DateSpecificView.extend({
+	tagName: 'time',
 	
-	timedate: function () {
-		return timedate(this.date);
+	render: function () {
+		this.$el
+			.attr('datetime', this.datetime())
+			.text(this.label());
+		
+		return this;
 	},
 	
-	day: function () {
+	datetime: function () {
+		return datetime(this.date);
+	},
+	
+	label: function () {
 		var today = new Date(),
 			yesterday = new Date();
-			
-		yesterday.setDate(today.getDate() - 1);
 		
-		if (timedate(today) === this.timedate()) {
+		yesterday.setDate(today.getDate() - 1);
+	
+		if (datetime(today) === this.datetime()) {
 			return 'Today';
-		} else if (timedate(yesterday) === this.timedate()) {
+		} else if (datetime(yesterday) === this.datetime()) {
 			return 'Yesterday';
 		}
-		
-		// FIXME: Pretty date
+	
+		// FIXME: Prettify the date!
 		return this.date + '';
-	}
-}, {
-	dateID: function (date) {
-		return 'd' + timedate(date);
 	},
 });
 
-var CalendarDateLabel = Backbone.View.extend({
-	tagName: 'time',
-});
-
-var TimerItemView = Backbone.View.extend({
+var TimerItemView = DateSpecificView.extend({
 	tagName: 'article',
 	
 	initialize: function () {
-		this.date = new Date(this.className.substr(1));
+		DateSpecificView.prototype.initialize.apply(this, arguments);
+		
+		this.description = new TimerDescriptionLabel({tagName: 'h3', date: this.date, model: this.model});
+		this.logged = new TimerValueLabel({date: this.date, model: this.model});
+		this.button = new TimerStartButton({date: this.date, model: this.model});
 	},
 	
 	render: function () {
-		var logged = this.model.loggedOnDate(this.date);
 		
-		return this.$el.html(
-			'<h3>' + this.model.get('description') + '</h3>' +
-			'<time datetime="' + duration(logged, true) + '">' + duration(logged) + 'logged</time>' +
-			'<button>Start</button>'
-		);
+		this.$el.empty()
+			.append(this.description.render().$el);
+		
+		var logged = $('<p> logged</p>').appendTo(this.$el);
+		logged.prepend(this.logged.render().$el);
+		
+		this.$el.append(this.button.render().$el);
+		
+		return this;
 	}
 });
 
-var TimerStartButton = Backbone.View.extend({
+var TimerStartButton = DateSpecificView.extend({
 	tagName: 'button',
 	
-	initialize: function () {
-		// this.model.
+	render: function () {
+		this.$el.text(this.model.get('started_on') ? 'Pause' : 'Start');
+		
+		return this;
 	},
 });
 
 var TimerDescriptionLabel = Backbone.View.extend({
-	tagName: 'h3',
+	render: function () {
+		this.$el.text(this.model.get('description'));
+		
+		return this;
+	},
 });
 
-var TimerValueLabel = Backbone.View.extend({
+var TimerValueLabel = DateSpecificView.extend({
 	tagName: 'time',
 	
-	initialize: function () {
-		// this.model || this.collection
+	render: function () {
+		var logged = 0;
+		
+		if (this.model) {
+			logged = this.model.loggedOnDate(this.date);
+		} else if (this.collection) {
+			logged = this.collection.loggedOnDate(this.date);
+		} else {
+			return;
+		}
+		
+		this.$el
+			.attr('datetime', duration(logged, true))
+			.text(duration(logged));
+		
+		return this;
 	},
 });
 
@@ -303,7 +355,9 @@ var DescriptionPane = Backbone.View.extend({
 	tagName: 'aside',
 	
 	render: function () {
-		return this.$el.empty();
+		this.$el.empty();
+		
+		return this;
 	},
 });
 
@@ -317,7 +371,9 @@ var TimePane = Backbone.View.extend({
 	tagName: 'aside',
 	
 	render: function () {
-		return this.$el.empty();
+		this.$el.empty();
+		
+		return this;
 	},
 });
 
@@ -339,7 +395,7 @@ var Application = Backbone.Router.extend({
 		});
 	},
 	
-	/* \\ -^_^- // */
+	// -------------- //
 	
 	main: function () {
 		console.log('List all timers');
@@ -387,7 +443,7 @@ function pad(n, width, z) {
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
-function timedate(date) {
+function datetime(date) {
 	date = _.isDate(date) ? date : new Date(date);
 	return date.getFullYear() + '-' + pad(date.getMonth() + 1, 2) + '-' + pad(date.getDate(), 2);
 }
