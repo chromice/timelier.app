@@ -313,17 +313,13 @@ var CalendarDateLabel = DateSpecificView.extend({
 	
 	render: function () {
 		this.$el
-			.attr('datetime', this.datetime())
+			.attr('datetime', this.date.getMachineDate())
 			.text(this.label());
 		
 		return this;
 	},
 	
 	// -------------- //
-	
-	datetime: function () {
-		return datetime(this.date);
-	},
 	
 	label: function () {
 		var dayToday = Math.floor(Clock.now.getTime() / 86400 / 1000),
@@ -339,9 +335,8 @@ var CalendarDateLabel = DateSpecificView.extend({
 		} else if ((Clock.now.getProperDay() - daysAgo) >= -7) {
 			return 'Last ' + this.date.getDayName();
 		}
-	
-		// FIXME: Prettify the date!
-		return this.date.getDayName() + ', ' + this.date.getDate() + ' ' + this.date.getMonthName() + ' ' + this.date.getFullYear();
+		
+		return this.date.getHumanDate();
 	},
 });
 
@@ -586,6 +581,10 @@ _.extend(Date.prototype, {
 	_en_weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 	_en_months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 	
+	isToday: function () {
+		var now = new Date();
+		return this.getMachineDate() === this.getMachineDate();
+	},
 	getProperDay: function () {
 		var day = this.getDay();
 		
@@ -596,6 +595,17 @@ _.extend(Date.prototype, {
 	},
 	getMonthName: function () {
 		return this._en_months[this.getProperDay()];
+	},
+	getHumanDate: function () {
+		return this.getDayName() + ', ' + this.getDate() + ' ' + this.getMonthName() + ' ' + this.getFullYear();
+	},
+	getMachineDate: function () {
+		return this.getFullYear() + '-' + this._pad(this.getMonth() + 1, 2) + '-' + this._pad(this.getDate(), 2);
+	},
+	_pad: function (n, width, z) {
+		z = z || '0';
+		n = n + '';
+		return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 	},
 });
 
@@ -610,8 +620,9 @@ function pad(n, width, z) {
 }
 
 function datetime(date) {
-	date = _.isDate(date) ? date : new Date(date);
-	return date.getFullYear() + '-' + pad(date.getMonth() + 1, 2) + '-' + pad(date.getDate(), 2);
+	var _date = _.isDate(date) ? date : new Date(date);
+	
+	return _date.getMachineDate();
 }
 
 function noSync(method, model, options) {
