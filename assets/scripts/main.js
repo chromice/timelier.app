@@ -7,17 +7,50 @@ var TimerModel = Backbone.Model.extend({
 		var now = new Date();
 		
 		return {
-			'started_on': now.toISOString(),
-			'description': ''
+			'created_on': now.toISOString(),
+			'started_on': false,
+			'description': false,
 		};
 	},
 	
 	constructor: function(attributes) {
-		this.entries = new EntryCollection(attributes.entries || null);
-		
-		delete attributes.entries;
+		if (attributes && attributes.entries) {
+			this.entries = new EntryCollection(attributes.entries);
+			delete attributes.entries;
+		} else {
+			this.entries = new EntryCollection(null);
+		}
 		
 		Backbone.Model.apply(this, arguments);
+	},
+	
+	// -------------- //
+	
+	toggle: function () {
+		var started = this.get('started_on');
+		
+		if (started) {
+			this._pause();
+		} else {
+			this._start();
+		}
+	},
+	
+	_pause: function () {
+		var now = new Date(),
+			start = new Date(this.get('started_on'));
+			
+		this.entries.add({
+			value: Math.ceil((now.getTime() - start.getTime()) / 1000)
+		});
+		
+		this.set('started_on', false);
+	},
+	
+	_start: function () {
+		var now = new Date();
+		
+		this.set('started_on', now.toISOString());
 	},
 	
 	// -------------- //
@@ -133,13 +166,13 @@ var CalendarPane = Backbone.View.extend({
 	id: 'main',
 	tagName: 'main',
 	events: {
-		'click button': 'startNewTimer',
+		'click #start-new': 'startNewTimer',
 	},
 	
 	initialize: function () {
-		this.timers = TimerCollection.all();
+		this.collection = TimerCollection.all();
 		
-		this.timers.each(function (timer) {
+		this.collection.each(function (timer) {
 			if (timer.get('started_on')) {
 				this.addTimerToDate(timer, timer.get('started_on'));
 			}
@@ -147,13 +180,16 @@ var CalendarPane = Backbone.View.extend({
 				this.addTimerToDate(timer, entry.get('logged_on'));
 			}, this);
 		}, this);
+		
+		this.listenTo(this.collection, 'add', this._onTimerAdded);
+		this.listenTo(this.collection, 'change:started_on', this._onTimerToggled);
 	},
 	
 	render: function () {
 		this.$el.empty()
 			.append('<header>' +
 				'<h1>Timer</h1>' +
-				'<button>Start new</button>' +
+				'<button id="start-new">Start new</button>' +
 			'</header>');
 			
 		_.each(this.dates, function (date) {
@@ -187,15 +223,39 @@ var CalendarPane = Backbone.View.extend({
 		
 		view.collection.add(timer);
 	},
+	_onTimerAdded: function (timer) {
+		var date = timer.get('started_on') || timer.get('created_on');
+		
+		this.addTimerToDate(timer, date);
+		this.render();
+	},
 	
 	// -------------- //
 	
 	startNewTimer: function (e) {
 		// TODO: Disable function for a second to prevent accidental double entry.
+		var timer = new TimerModel({});
 		
-		this.timers.add({});
+		this.collection.add(timer);
 		
-		console.log(this.timers);
+		timer.toggle();
+	},
+	_onTimerToggled: function (_, started_on) {
+		// Active timer paused?
+		if (!started_on) {
+			return;
+		}
+		
+		// Find other active timer and pause it
+		var timer = this.collection.find(function (timer) {
+			var _started_on = timer.get('started_on');
+			
+			return _started_on !== false && _started_on !== started_on;
+		});
+		
+		if (timer) {
+			timer.toggle();
+		}
 	},
 });
 
@@ -236,7 +296,9 @@ var TimerListView = DateSpecificView.extend({
 		
 		return this;
 	},
-}, {
+	
+},{ // -------------- //
+	
 	idPrefix: 'd-',
 	
 	dateToId: function (date) {
@@ -251,6 +313,12 @@ var TimerListView = DateSpecificView.extend({
 var CalendarDateLabel = DateSpecificView.extend({
 	tagName: 'time',
 	
+	initialize: function () {
+		DateSpecificView.prototype.initialize.apply(this, arguments);
+		
+		Clock.on('tick:date', this.render, this);
+	},
+	
 	render: function () {
 		this.$el
 			.attr('datetime', this.datetime())
@@ -258,6 +326,8 @@ var CalendarDateLabel = DateSpecificView.extend({
 		
 		return this;
 	},
+	
+	// -------------- //
 	
 	datetime: function () {
 		return datetime(this.date);
@@ -307,17 +377,44 @@ var TimerItemView = DateSpecificView.extend({
 
 var TimerStartButton = DateSpecificView.extend({
 	tagName: 'button',
+	events: {
+		'click': 'toggle'
+	},
+	
+	initialize: function () {
+		DateSpecificView.prototype.initialize.apply(this, arguments);
+		
+		this.listenTo(this.model, 'change:started_on', this.render);
+	},
 	
 	render: function () {
 		this.$el.text(this.model.get('started_on') ? 'Pause' : 'Start');
 		
 		return this;
 	},
+	
+	// -------------- //
+	toggle: function (e) {
+		this.model.toggle();
+	},
 });
 
 var TimerDescriptionLabel = Backbone.View.extend({
+	initialize: function () {
+		DateSpecificView.prototype.initialize.apply(this, arguments);
+		
+		this.listenTo(this.model, 'change:description', this.render);
+	},
+
 	render: function () {
-		this.$el.text(this.model.get('description'));
+		var description = this.model.get('description');
+		
+		if (description) {
+			this.$el.text(description);
+		} else {
+			var created = new Date(this.model.get('created_on'));
+			this.$el.html('<em>New timer started at ' + created.getHours() + ':' + pad(created.getMinutes(), 2) + '</em>');
+		}
 		
 		return this;
 	},
@@ -325,6 +422,12 @@ var TimerDescriptionLabel = Backbone.View.extend({
 
 var TimerValueLabel = DateSpecificView.extend({
 	tagName: 'time',
+	
+	initialize: function () {
+		DateSpecificView.prototype.initialize.apply(this, arguments);
+		
+		Clock.on('tick:second', this.render, this);
+	},
 	
 	render: function () {
 		var logged = 0;
@@ -338,11 +441,24 @@ var TimerValueLabel = DateSpecificView.extend({
 		}
 		
 		this.$el
-			.attr('datetime', duration(logged, true))
-			.text(duration(logged));
+			.attr('datetime', this._duration(logged, true))
+			.text(this._duration(logged));
 		
 		return this;
 	},
+	
+	// -------------- //
+	
+	_duration: function (seconds, machine) {
+		var minutes = Math.floor(seconds / 60),
+			hours = Math.floor(minutes / 60);
+	
+		if (machine) {
+			return 'PT' + hours + 'H' + (minutes % 60) + 'M' + (seconds % 60) + 'S';
+		}
+	
+		return hours + ':' + pad(minutes % 60, 2) + ':' + pad(seconds % 60, 2);
+	}
 });
 
 
@@ -437,6 +553,33 @@ $(function () {
 // = Helpers =
 // ===========
 
+// ---------
+// - Clock -
+// ---------
+
+var Clock = {};
+
+_.extend(Clock, Backbone.Events);
+
+setInterval(_.bind(function () {
+	var now = new Date();
+	
+	if (this.second != now.getSeconds()) {
+		this.second = now.getSeconds();
+		this.trigger('tick tick:second');
+	}
+	
+	if (this.date != now.getDate()) {
+		this.date = now.getDate();
+		this.trigger('tick tick:date');
+	}
+}, Clock), 100);
+
+
+// ---------------------
+// - Utility functions -
+// ---------------------
+
 function pad(n, width, z) {
 	z = z || '0';
 	n = n + '';
@@ -446,17 +589,6 @@ function pad(n, width, z) {
 function datetime(date) {
 	date = _.isDate(date) ? date : new Date(date);
 	return date.getFullYear() + '-' + pad(date.getMonth() + 1, 2) + '-' + pad(date.getDate(), 2);
-}
-
-function duration(seconds, machine) {
-	var minutes = Math.floor(seconds / 60),
-		hours = Math.floor(minutes / 60);
-	
-	if (machine) {
-		return 'PT' + hours + 'H' + (minutes % 60) + 'M';
-	}
-	
-	return hours + ':' + pad(minutes % 60, 2);
 }
 
 function noSync(method, model, options) {
@@ -500,7 +632,7 @@ function boostrapTimerCollection () {
 		},
 		{
 			'started_on': false,
-			'description': 'Playing videogames',
+			'description': 'Playing video games',
 			'entries': [
 				{
 					'logged_on': '2016-02-06T02:20:00.616Z',
