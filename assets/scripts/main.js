@@ -4,10 +4,8 @@
 
 var TimerModel = Backbone.Model.extend({
 	defaults: function () {
-		var now = new Date();
-		
 		return {
-			'created_on': now.toISOString(),
+			'created_on': Clock.now.toISOString(),
 			'started_on': false,
 			'description': false,
 		};
@@ -37,20 +35,17 @@ var TimerModel = Backbone.Model.extend({
 	},
 	
 	_pause: function () {
-		var now = new Date(),
-			start = new Date(this.get('started_on'));
+		var start = new Date(this.get('started_on'));
 			
 		this.entries.add({
-			value: Math.ceil((now.getTime() - start.getTime()) / 1000)
+			value: Math.ceil((Clock.now.getTime() - start.getTime()) / 1000)
 		});
 		
 		this.set('started_on', false);
 	},
 	
 	_start: function () {
-		var now = new Date();
-		
-		this.set('started_on', now.toISOString());
+		this.set('started_on', Clock.now.toISOString());
 	},
 	
 	// -------------- //
@@ -65,10 +60,9 @@ var TimerModel = Backbone.Model.extend({
 			started_on = this.get('started_on');
 		
 		if (started_on) {
-			var start = new Date(started_on),
-				now = new Date();
+			var start = new Date(started_on);
 			
-			logged+= Math.ceil((now.getTime() - start.getTime()) / 1000);
+			logged+= Math.ceil((Clock.now.getTime() - start.getTime()) / 1000);
 		}
 		
 		return logged;
@@ -77,10 +71,8 @@ var TimerModel = Backbone.Model.extend({
 
 var EntryModel = Backbone.Model.extend({
 	defaults: function () {
-		var now = new Date();
-		
 		return {
-			'logged_on': now.toISOString(),
+			'logged_on': Clock.now.toISOString(),
 			'manually': false,
 			'value': 0,
 		};
@@ -557,23 +549,25 @@ $(function () {
 // - Clock -
 // ---------
 
-var Clock = {};
+var Clock = {
+	now: new Date(),
+};
 
 _.extend(Clock, Backbone.Events);
 
 setInterval(_.bind(function () {
-	var now = new Date();
+	Clock.now = new Date();
 	
-	if (this.second != now.getSeconds()) {
-		this.second = now.getSeconds();
+	if (this.second != Clock.now.getSeconds()) {
+		this.second = Clock.now.getSeconds();
 		this.trigger('tick tick:second');
 	}
 	
-	if (this.date != now.getDate()) {
-		this.date = now.getDate();
+	if (this.date != Clock.now.getDate()) {
+		this.date = Clock.now.getDate();
 		this.trigger('tick tick:date');
 	}
-}, Clock), 100);
+}, Clock), 25);
 
 
 // ---------------------
