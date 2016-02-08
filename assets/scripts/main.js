@@ -225,8 +225,8 @@ var CalendarPane = Backbone.View.extend({
 			
 			this.dates.push(view);
 			
-			_.sortBy(this.dates, function (view) {
-				return view.date.getTime();
+			this.dates = _.sortBy(this.dates, function (view) {
+				return view.date.getTime() * -1;
 			});
 		}
 		
@@ -421,7 +421,7 @@ var TimerDescriptionLabel = Backbone.View.extend({
 			this.$el.text(description);
 		} else {
 			var created = new Date(this.model.get('created_on'));
-			this.$el.html('<em>New timer started at ' + created.getHours() + ':' + pad(created.getMinutes(), 2) + '</em>');
+			this.$el.html('<em>New timer started at ' + created.getHours() + ':' + created.getMinutes().pad(2) + '</em>');
 		}
 		
 		return this;
@@ -465,7 +465,7 @@ var TimerValueLabel = DateSpecificView.extend({
 			return 'PT' + hours + 'H' + (minutes % 60) + 'M'/* + (seconds % 60) + 'S'*/;
 		}
 	
-		return hours + ':' + pad(minutes % 60, 2)/* + ':' + pad(seconds % 60, 2)*/;
+		return hours + ':' + (minutes % 60).pad(2)/* + ':' + (seconds % 60).pad(2)*/;
 	}
 });
 
@@ -617,24 +617,41 @@ _.extend(Date.prototype, {
 		return this.getDayName() + ', ' + this.getDate() + ' ' + this.getMonthName() + ' ' + this.getFullYear();
 	},
 	getMachineDate: function () {
-		return this.getFullYear() + '-' + this._pad(this.getMonth() + 1, 2) + '-' + this._pad(this.getDate(), 2);
+		return this.getFullYear() + '-' + (this.getMonth() + 1).pad(2) + '-' + this.getDate().pad(2);
 	},
-	_pad: function (n, width, z) {
-		z = z || '0';
-		n = n + '';
-		return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-	},
+});
+
+// ----------
+// - Number -
+// ----------
+
+_.extend(Number.prototype, {
+	pad: function (width, zero) {
+		var string = String(this);
+		
+		return string.pad(width, zero);
+	}
+});
+
+// ----------
+// - String -
+// ----------
+
+_.extend(String.prototype, {
+	pad: function (width, zero) {
+		zero = zero || 0;
+		
+		if (this.length >= width) {
+			return this;
+		}
+		
+		return new Array(width - this.length + 1).join(zero) + this;
+	}
 });
 
 // ---------------------
 // - Utility functions -
 // ---------------------
-
-function pad(n, width, z) {
-	z = z || '0';
-	n = n + '';
-	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-}
 
 function datetime(date) {
 	var _date = _.isDate(date) ? date : new Date(date);
@@ -655,6 +672,7 @@ function boostrapTimerCollection () {
 	// Calculate active timer
 	var now = new Date();
 
+	now.setDate(now.getDate() - 1);
 	now.setHours(now.getHours() - 1);
 	now.setMinutes(now.getMinutes() - 15);
 
