@@ -368,7 +368,7 @@ var TimerItemView = DateSpecificView.extend({
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
-		this.description = new TimerDescriptionLabel({tagName: 'h3', date: this.date, model: this.model});
+		this.description = new TimerDescriptionLabel({tagName: 'h3', model: this.model});
 		this.logged = new TimerValueLabel({date: this.date, model: this.model});
 		this.button = new TimerStartButton({date: this.date, model: this.model});
 	},
@@ -427,6 +427,10 @@ var TimerStartButton = DateSpecificView.extend({
 });
 
 var TimerDescriptionLabel = Backbone.View.extend({
+	events: {
+		'click': 'edit'
+	},
+	
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
@@ -444,6 +448,77 @@ var TimerDescriptionLabel = Backbone.View.extend({
 		}
 		
 		return this;
+	},
+	
+	// -------------- //
+	
+	edit: function (e) {
+		var input = new TextInputField({
+				original: this,
+				model: this.model,
+				property: 'description',
+			
+				label: 'Timer description', 
+				placeholder: 'Have you been productive?',
+			});
+		
+		input.render().on('blur', function () {
+			this.$el.removeClass('hidden');
+			input.remove();
+		}, this);
+	},
+});
+
+var TextInputField = Backbone.View.extend({
+	tagName: 'div',
+	events: {
+		'blur textarea': 'blur',
+		'change textarea': 'change',
+		'keyup textarea': 'change',
+		'keydown textarea': 'enter',
+	},
+	
+	initialize: function (options) {
+		this.original = options.original;
+		this.property = options.property;
+		
+		this.label = options.label || '';
+		this.placeholder = options.placeholder || '';
+	},
+	
+	render: function () {
+		var value = this.model.get(this.property),
+			field_id = this.model.cid + '-' + this.property,
+			label = $('<label>').text(this.label).attr({
+				'for': field_id,
+			}),
+			textarea = $('<textarea>').val(value).attr({
+				'id': field_id,
+				'placeholder': this.placeholder,
+			});
+			
+		this.$el.empty()
+			.append(label)
+			.append(textarea)
+			.insertAfter(this.original.$el);
+		
+		textarea.on('focus', function () { this.select(); }).focus();
+		
+		return this;
+	},
+	
+	change: function (e) {
+		this.model.set(this.property, $(e.target).val());
+	},
+	
+	enter: function (e) {
+		if (e.which == 13 || e.keyCode == 13) {
+			this.blur();
+		}
+	},
+	
+	blur: function () {
+		this.trigger('blur');
 	},
 });
 
@@ -766,17 +841,17 @@ function boostrapTimerCollection () {
 				{
 					'logged_on': '2016-02-01T13:22:00.000Z',
 					'manually': false,
-					'value': 200 * 60,
+					'value': 123 * 60,
 				},
 				{
 					'logged_on': '2016-01-31T13:22:00.000Z',
 					'manually': false,
-					'value': 200 * 60,
+					'value': 43 * 60,
 				},
 				{
 					'logged_on': '2016-01-24T13:22:00.000Z',
 					'manually': false,
-					'value': 200 * 60,
+					'value': 56 * 60,
 				},
 			],
 		},
