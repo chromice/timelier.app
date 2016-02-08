@@ -453,7 +453,9 @@ var TimerValueLabel = DateSpecificView.extend({
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
-		Clock.on('tick:second', this.render, this);
+		if (this.date.isToday()) {
+			Clock.on('tick:second', this.render, this);
+		}
 	},
 	
 	render: function () {
@@ -463,8 +465,6 @@ var TimerValueLabel = DateSpecificView.extend({
 			logged = this.model.loggedOnDate(this.date);
 		} else if (this.collection) {
 			logged = this.collection.loggedOnDate(this.date);
-		} else {
-			return;
 		}
 		
 		this.$el
