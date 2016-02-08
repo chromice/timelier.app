@@ -387,7 +387,7 @@ section > header p {
 */
 article {
   position: relative;
-  padding-left: 100px;
+  padding-left: 130px;
   padding-right: 130px;
   padding-bottom: 0;
   border-bottom: 1px solid #ddd;
@@ -419,7 +419,7 @@ article h3 + div textarea {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 100px;
+  left: 130px;
   right: 130px;
 }
 article h3.empty {
