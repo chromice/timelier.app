@@ -444,8 +444,10 @@ var TimerDescriptionLabel = Backbone.View.extend({
 			this.$el.text(description);
 		} else {
 			var created = new Date(this.model.get('created_on'));
-			this.$el.html('<em>New timer started at ' + created.getHours() + ':' + created.getMinutes().pad(2) + '</em>');
+			this.$el.text('New timer started at ' + created.getHours() + ':' + created.getMinutes().pad(2));
 		}
+		
+		this.$el.toggleClass('empty', !description);
 		
 		return this;
 	},
@@ -487,7 +489,7 @@ var TextInputField = Backbone.View.extend({
 	},
 	
 	render: function () {
-		var value = this.model.get(this.property),
+		var value = this.model.get(this.property) || '',
 			field_id = this.model.cid + '-' + this.property,
 			label = $('<label>').text(this.label).attr({
 				'for': field_id,
