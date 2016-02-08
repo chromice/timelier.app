@@ -360,7 +360,7 @@ th {
   position: relative;
 }
 #main > header h1 {
-  margin-right: 5px;
+  margin-left: 5px;
   text-align: left;
 }
 #main > header button {
