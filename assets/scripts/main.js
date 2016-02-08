@@ -51,7 +51,8 @@ var TimerModel = Backbone.Model.extend({
 	// -------------- //
 	
 	loggedOnDate: function (date) {
-		var entries = this.entries.filter(function (entry) {
+		var day = new Date(date),
+			entries = this.entries.filter(function (entry) {
 				return datetime(entry.get('logged_on')) === datetime(date);
 			}),
 			logged = _.reduce(entries, function (memo, entry) {
@@ -59,7 +60,7 @@ var TimerModel = Backbone.Model.extend({
 			}, 0),
 			started_on = this.get('started_on');
 		
-		if (started_on) {
+		if (started_on && day.isToday()) {
 			var start = new Date(started_on);
 			
 			logged+= Math.ceil((Clock.now.getTime() - start.getTime()) / 1000);
@@ -88,15 +89,15 @@ var TimerCollection = Backbone.Collection.extend({
 	model: TimerModel,
 	comparator: function (timer) {
 		var started = timer.get('started_on'),
-			entry = timer.entries.first();
+			created = timer.get('created_on');
+			
+		var last_entry = timer.entries.first();
+			logged = last_entry ? last_entry.get('logged_on') : false;
 		
-		if (started) {
-			started = new Date(started);
-			return started.getTime() * -1;
-		} else if (entry) {
-			entry = new Date(entry.get('logged_on'));
-			return entry.getTime() * -1;
-		}
+		return _.max(_.map([started, logged, created], function (ts) {
+			var time = new Date(ts);
+			return time.getTime();
+		})) * -1;
 	},
 	
 	// -------------- //
@@ -228,6 +229,8 @@ var CalendarPane = Backbone.View.extend({
 			this.dates = _.sortBy(this.dates, function (view) {
 				return view.date.getTime() * -1;
 			});
+			
+			this.render();
 		}
 		
 		view.collection.add(timer);
@@ -236,7 +239,6 @@ var CalendarPane = Backbone.View.extend({
 		var date = timer.get('started_on') || timer.get('created_on');
 		
 		this.addTimerToDate(timer, date);
-		this.render();
 	},
 	
 	// -------------- //
@@ -249,21 +251,24 @@ var CalendarPane = Backbone.View.extend({
 		
 		timer.toggle();
 	},
-	_onTimerToggled: function (_, started_on) {
+	_onTimerToggled: function (timer, started_on) {
 		// Active timer paused?
 		if (!started_on) {
 			return;
 		}
 		
+		// Make sure new timer is in today's view
+		this.addTimerToDate(timer, started_on);
+		
 		// Find other active timer and pause it
-		var timer = this.collection.find(function (timer) {
+		var previous = this.collection.find(function (timer) {
 			var _started_on = timer.get('started_on');
 			
 			return _started_on !== false && _started_on !== started_on;
 		});
 		
-		if (timer) {
-			timer.toggle();
+		if (previous) {
+			previous.toggle();
 		}
 	},
 });
@@ -282,7 +287,8 @@ var TimerListView = DateSpecificView.extend({
 		
 		this.dateLabel = new CalendarDateLabel({date: this.date});
 		this.totalLogged = new TimerValueLabel({date: this.date, collection: this.collection});
-		this.timers = [];
+		
+		this.listenTo(this.collection, 'add', this.render);
 	},
 	
 	render: function () {
@@ -299,7 +305,6 @@ var TimerListView = DateSpecificView.extend({
 		this.collection.each(function (timer) {
 			var view = new TimerItemView({date: this.date, model: timer});
 			
-			this.timers.push(view);
 			this.$el.append(view.render().$el);
 		}, this);
 		
@@ -391,11 +396,25 @@ var TimerStartButton = DateSpecificView.extend({
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
+		Clock.on('tick:day', this.render, this);
 		this.listenTo(this.model, 'change:started_on', this.render);
 	},
 	
 	render: function () {
-		this.$el.text(this.model.get('started_on') ? 'Pause' : 'Start');
+		var label, className;
+		
+		if (!this.date.isToday()) {
+			label = 'Start today';
+			className = 'inactive';
+		} else if (this.model.get('started_on')) {
+			label = 'Pause';
+			className = 'started';
+		} else {
+			label = 'Start';
+			className = 'paused';
+		}
+		
+		this.$el.text(label).attr('class', className);
 		
 		return this;
 	},
@@ -434,7 +453,7 @@ var TimerValueLabel = DateSpecificView.extend({
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
-		Clock.on('tick:minute', this.render, this);
+		Clock.on('tick:second', this.render, this);
 	},
 	
 	render: function () {
@@ -462,10 +481,10 @@ var TimerValueLabel = DateSpecificView.extend({
 			hours = Math.floor(minutes / 60);
 	
 		if (machine) {
-			return 'PT' + hours + 'H' + (minutes % 60) + 'M'/* + (seconds % 60) + 'S'*/;
+			return 'PT' + hours + 'H' + (minutes % 60) + 'M' + (seconds % 60) + 'S';
 		}
 	
-		return hours + ':' + (minutes % 60).pad(2)/* + ':' + (seconds % 60).pad(2)*/;
+		return hours + ':' + (minutes % 60).pad(2) + ':' + (seconds % 60).pad(2);
 	}
 });
 
@@ -579,8 +598,8 @@ setInterval(_.bind(function () {
 		this.trigger('tick tick:second');
 	}
 	
-	if (this.second != Clock.now.getMinutes()) {
-		this.second = Clock.now.getMinutes();
+	if (this.minute != Clock.now.getMinutes()) {
+		this.minute = Clock.now.getMinutes();
 		this.trigger('tick tick:minute');
 	}
 	
@@ -600,7 +619,7 @@ _.extend(Date.prototype, {
 	
 	isToday: function () {
 		var now = new Date();
-		return this.getMachineDate() === this.getMachineDate();
+		return this.getMachineDate() === now.getMachineDate();
 	},
 	getProperDay: function () {
 		var day = this.getDay();
@@ -672,7 +691,6 @@ function boostrapTimerCollection () {
 	// Calculate active timer
 	var now = new Date();
 
-	now.setDate(now.getDate() - 1);
 	now.setHours(now.getHours() - 1);
 	now.setMinutes(now.getMinutes() - 15);
 
