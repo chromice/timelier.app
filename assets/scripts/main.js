@@ -198,7 +198,7 @@ var CalendarPane = Backbone.View.extend({
 	render: function () {
 		this.$el.empty()
 			.append('<header>' +
-				'<h1>Timer</h1>' +
+				'<h1>Timers</h1>' +
 				'<button id="start-new">Start new</button>' +
 			'</header>');
 			
@@ -300,7 +300,7 @@ var TimerListView = DateSpecificView.extend({
 		label.prepend(this.dateLabel.render().$el);
 		logged.prepend(this.totalLogged.render().$el);
 		
-		this.$el.wrapAll('<header>');
+		this.$el.prepend($('<header>').append(label).append(logged));
 		
 		this.collection.each(function (timer) {
 			var view = new TimerItemView({date: this.date, model: timer});

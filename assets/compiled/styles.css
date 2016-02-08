@@ -353,5 +353,76 @@ td,
 th {
   padding: 0;
 }
+/*
+	App header
+*/
+#main > header {
+  position: relative;
+}
+#main > header h1 {
+  margin-right: 5px;
+  text-align: left;
+}
+#main > header button {
+  position: absolute;
+  top: 0;
+  right: 5px;
+}
+/*
+	Day header
+*/
+section > header {
+  overflow: hidden;
+}
+section > header h2 {
+  float: left;
+  margin-left: 5px;
+}
+section > header p {
+  float: right;
+  margin-right: 5px;
+}
+/*
+	Timer
+*/
+article {
+  position: relative;
+  padding-left: 100px;
+  padding-right: 130px;
+  padding-bottom: 0;
+  border-bottom: 1px solid #ddd;
+  padding-top: 0;
+}
+article button {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+article p {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  margin: 0;
+}
+article h3,
+article textarea {
+  margin: 0;
+  border: 0;
+  padding: 5px;
+  font: bold 20px/1.4 sans-serif;
+}
+article h3 + div label {
+  display: none;
+}
+article h3 + div textarea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100px;
+  right: 130px;
+}
+article h3.hidden {
+  visibility: hidden;
+}
 
 /*# sourceMappingURL=/assets/compiled/styles.css.map */

@@ -28,5 +28,85 @@
 // = Components =
 // ==============
 
+/*
+	App header
+*/
+#main > header {
+	position: relative;
+	
+	h1 {
+		margin-right: 5px;
+		text-align: left;
+	}
+	
+	button {
+		position: absolute;
+		top: 0;
+		right: 5px;
+	}
+}
 
+/*
+	Day header
+*/
+section > header {
+	overflow: hidden;
+	
+	h2 {
+		float: left;
+		margin-left: 5px;
+	}
+	p {
+		float: right;
+		margin-right: 5px;
+	}
+}
 
+/*
+	Timer
+*/
+article {
+	position: relative;
+	padding-left: 100px;
+	padding-right: 130px;
+	padding-bottom: 0;
+	border-bottom: 1px solid #ddd;
+	padding-top: 0;
+	
+	button {
+		position: absolute;
+		top: 5px;
+		left: 5px;
+	}
+	
+	p {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		margin: 0;
+	}
+	
+	h3, textarea {
+		margin: 0;
+		border: 0;
+		padding: 5px;
+		font: bold 20px/1.4 sans-serif;
+	}
+	
+	h3 + div {
+		label {
+			display: none;
+		}
+		textarea {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 100px;
+			right: 130px;
+		}
+	}
+	
+	h3.hidden {
+		visibility: hidden;
+	}
+}
