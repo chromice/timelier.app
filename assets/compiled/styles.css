@@ -353,64 +353,326 @@ td,
 th {
   padding: 0;
 }
+textarea {
+  resize: vertical;
+}
+audio,
+canvas,
+img,
+svg,
+video {
+  vertical-align: middle;
+}
+.ext-reset-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.ext-clearfix {
+  *zoom: 1;
+}
+.ext-clearfix:before,
+.ext-clearfix:after {
+  content: " ";
+  display: table;
+}
+.ext-clearfix:after {
+  clear: both;
+}
+.ext-image-replaced,
+article button {
+  overflow: hidden;
+  text-indent: -999em;
+  white-space: nowrap;
+}
+.ext-hidden,
+.w {
+  display: none !important;
+  visibility: hidden;
+}
+.ext-invisible {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+}
+.ext-invisible:active,
+.ext-invisible:focus {
+  position: static;
+  clip: auto;
+  overflow: visible;
+  height: auto;
+  margin: 0;
+  width: auto;
+}
+.ext-border-box {
+  box-sizing: border-box;
+}
+.ext-content-box {
+  box-sizing: content-box;
+}
+.scrollbar-measure {
+  overflow: scroll;
+  position: absolute;
+  top: -9999px;
+  width: 100px;
+  height: 100px;
+}
+@media print {
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .ext-not-printable {
+    display: none !important;
+  }
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+  .ext-image-replaced a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after,
+  article button a:after {
+    content: "";
+  }
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+  img {
+    max-width: 100% !important;
+  }
+  @page {
+    margin: 0.5cm;
+  }
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}
+/*
+	Sections
+*/
+html {
+  background: #f6f6f6;
+  color: #333;
+  font: 20px / 1.4 'Helvetica Neue', sans-serif;
+}
+header,
+article {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+/*
+	Headings
+*/
+h1,
+h2 {
+  color: #555;
+}
+/*
+	Buttons
+*/
+button {
+  padding: 0 10px;
+  margin: -1px;
+  border: 1px solid #555;
+  border-radius: 12px;
+  background: transparent;
+  position: relative;
+  top: 3.745px;
+  top: 0.18725rem;
+  font: 300 15px / 1.6 'Helvetica Neue', sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+button:hover,
+button:focus {
+  border-color: #333;
+  background: #333;
+  color: #fafafa;
+}
+/*
+	Misc
+*/
 /*
 	App header
 */
+#main {
+  padding-top: 56px;
+  padding-top: calc(2.8rem + -1px);
+  padding-bottom: 28px;
+  padding-bottom: 1.4rem;
+}
 #main > header {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding-top: 14px;
+  padding-top: 0.7rem;
+  padding-bottom: 7px;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #ddd;
+  background: #fafafa;
 }
 #main > header h1 {
-  margin-left: 5px;
-  text-align: left;
+  margin: 0;
+  position: relative;
+  top: -4.496px;
+  top: -0.2248rem;
+  font: 500 24px / 1.4 'Helvetica Neue', sans-serif;
+  font-size: 1.2rem;
+  text-align: center;
 }
 #main > header button {
   position: absolute;
-  top: 0;
-  right: 5px;
+  top: 14px;
+  top: 0.7rem;
+  left: 1.86915888%;
+  left: calc(0% + 0px + 10px);
 }
 /*
 	Day header
 */
 section > header {
+  padding-top: 35px;
+  padding-top: 1.75rem;
+  padding-bottom: 7px;
+  padding-bottom: calc(0.35rem + -1px);
+  border-bottom: 1px solid #eee;
   overflow: hidden;
 }
 section > header h2 {
   float: left;
-  margin-left: 5px;
+  margin: 0;
+  position: relative;
+  top: 4.136px;
+  top: 0.2068rem;
+  font: 700 16px / 1.4 'Helvetica Neue', sans-serif;
+  font-size: 0.8rem;
 }
 section > header p {
+  margin: 0;
   float: right;
-  margin-right: 5px;
+  position: relative;
+  top: -0.18px;
+  top: -0.009rem;
+  font: 500 20px / 1.4 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+  color: #555;
 }
 /*
 	Timer
 */
 article {
   position: relative;
-  padding-left: 130px;
-  padding-right: 130px;
+  padding-left: 10.37383178%;
+  padding-left: calc(10% + 2px);
+  padding-right: 20.74766355%;
+  padding-right: calc(20% + 4px);
   padding-bottom: 0;
-  border-bottom: 1px solid #ddd;
   padding-top: 0;
+  border-bottom: 1px solid #eee;
+  background-color: #fafafa;
 }
 article button {
   position: absolute;
-  top: 5px;
-  left: 5px;
+  top: 50%;
+  left: 10px;
+  border-radius: 50%;
+  border-color: #888;
+  margin-top: -20px;
+  width: 40px;
+  height: 40px;
+}
+article button:before,
+article button:after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  content: '';
+}
+article button.paused:before,
+article button.inactive:before {
+  margin-top: -9px;
+  margin-left: -6px;
+  border-left: 17px solid #888;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+}
+article button.paused:after,
+article button.inactive:after {
+  display: none;
+}
+article button.started:before,
+article button.started:after {
+  margin-top: -9px;
+  margin-left: -9px;
+  height: 18px;
+  border-left: 6px solid #888;
+}
+article button.started:after {
+  margin-left: 3px;
+}
+article button:hover:before,
+article button:focus:before,
+article button:hover:after,
+article button:focus:after {
+  border-left-color: #fafafa;
 }
 article p {
   position: absolute;
-  top: 5px;
-  right: 5px;
-  margin: 0;
+  top: 50%;
+  right: 10px;
+  margin: -14px 0 0;
+  font: 500 20px / 1.4 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
 }
 article h3,
 article textarea {
   margin: 0;
   border: 0;
   padding: 5px;
-  font: bold 20px/1.4 sans-serif;
+  padding-top: 14px;
+  padding-top: 0.7rem;
+  padding-bottom: 14px;
+  padding-bottom: 0.7rem;
+  background: transparent;
   color: #333;
+  font: bold 20px/1.4 sans-serif;
+}
+article h3 + div {
+  overflow: hidden;
 }
 article h3 + div label {
   display: none;
@@ -419,8 +681,16 @@ article h3 + div textarea {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 130px;
-  right: 130px;
+  left: 10.37383178%;
+  left: calc(10% + 2px);
+  right: 20.74766355%;
+  right: calc(20% + 4px);
+  margin-bottom: -28px;
+  margin-bottom: -1.4rem;
+  resize: none;
+}
+article h3 + div textarea:focus {
+  outline: 0;
 }
 article h3.empty {
   color: #888;

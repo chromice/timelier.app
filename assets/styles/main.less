@@ -4,24 +4,95 @@
 
 @import (less) 'normalize.css';
 @import 'order.less';
-
+@import 'clutter.less';
 
 // ========================================
 // = Shared variables, styles, and mixins =
 // ========================================
 
+@color-primary: #dd0000;
+
+@color-dark: #333;
+@color-normal: #555;
+@color-lighter: #888;
+@color-light: #ddd;
+@color-lightest: #eee;
+@color-grey: #f6f6f6;
+@color-white: #fafafa;
 
 
-// ==============
-// = Typography =
-// ==============
+// =======================
+// = Typography / Layout =
+// =======================
+
+@light-font-family: 'Helvetica Neue', sans-serif;
+@light-font-variation: 300;
+@light-font-offset: 0.877;
+
+@normal-font-family: 'Helvetica Neue', sans-serif;
+@normal-font-variation: 400;
+@normal-font-offset: 0.870;
+
+@bold-font-family: 'Helvetica Neue', sans-serif;
+@bold-font-variation: 500;
+@bold-font-offset: 0.879;
+
+@bolder-font-family: 'Helvetica Neue', sans-serif;
+@bolder-font-variation: 700;
+@bolder-font-offset: 0.879;
+
+.use-baseline-grid(20px, 1.4, normal);
+.use-column-grid(535px, 20px, 5);
+
+/*
+	Sections
+*/
+html {
+	background: @color-grey;
+	color: @color-dark;
+    font: @baseline-size / @baseline-height @normal-font-family;
+}
+header, article {
+	padding-left: (@grid-gutter / 2);
+	padding-right: (@grid-gutter / 2);
+}
+
+/*
+	Headings
+*/
+h1, h2 {
+	color: @color-normal;
+}
 
 
+/*
+	Buttons
+*/
 
-// ==========
-// = Layout =
-// ==========
+button {
+	padding: 0 (@grid-gutter / 2);
+	margin: -1px;
+	border: 1px solid @color-normal;
+	border-radius: (15px * 1.6 / 2);
+	background: transparent;
+	.font-align(15px, 1.6, light);
+	text-transform: uppercase;
+	
+	&:hover, &:focus {
+		border-color: @color-dark;
+		background: @color-dark;
+		color: @color-white;
+	}
+}
 
+/*
+	Misc
+*/
+
+// Hide words
+.w {
+	.hidden();
+}
 
 
 // ==============
@@ -31,18 +102,31 @@
 /*
 	App header
 */
+#main {
+	.padding-top(2, -1px);
+	.padding-bottom(1);
+}
 #main > header {
-	position: relative;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	.padding-top(0.5);
+	.padding-bottom(0.25);
+	border-bottom: 1px solid @color-light;
+	background: @color-white;
 	
 	h1 {
-		margin-left: 5px;
-		text-align: left;
+		margin: 0;
+		.font-align(24px, 1.4, bold);
+		text-align: center;
 	}
 	
 	button {
 		position: absolute;
-		top: 0;
-		right: 5px;
+		.top(0.5);
+		.left((@grid-gutter / 2))
 	}
 }
 
@@ -50,15 +134,21 @@
 	Day header
 */
 section > header {
+	.padding-top(1.25);
+	.padding-bottom(0.25, -1px);
+	border-bottom: 1px solid @color-lightest;
 	overflow: hidden;
 	
 	h2 {
 		float: left;
-		margin-left: 5px;
+		margin: 0;
+		.font-align(16px, 1.4, bolder);
 	}
 	p {
+		margin: 0;
 		float: right;
-		margin-right: 5px;
+		.font-align(20px, 1.4, bold);
+		color: @color-normal;
 	}
 }
 
@@ -67,34 +157,88 @@ section > header {
 */
 article {
 	position: relative;
-	padding-left: 130px;
-	padding-right: 130px;
+	.padding-left(0.5);
+	.padding-right(1);
 	padding-bottom: 0;
-	border-bottom: 1px solid #ddd;
 	padding-top: 0;
+	border-bottom: 1px solid @color-lightest;
+	background-color: @color-white;
 	
 	button {
+		@size: (@grid-gutter * 2);
+		
 		position: absolute;
-		top: 5px;
-		left: 5px;
+		top: 50%;
+		left: (@grid-gutter / 2);
+		border-radius: 50%;
+		border-color: @color-lighter;
+		margin-top: (@size / -2);
+		width: @size;
+		height: @size;
+		
+		.image-replaced();
+		
+		&:before, &:after {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			display: block;
+			content: '';
+		}
+		
+		&.paused, &.inactive {
+			&:before {
+				margin-top: -9px;
+				margin-left: -6px;
+				border-left: 17px solid @color-lighter;
+				border-top: 9px solid transparent;
+				border-bottom: 9px solid transparent;
+			}
+			&:after {
+				display: none;
+			}
+		}
+		
+		&.started  {
+			&:before, &:after {
+				margin-top: -9px;
+				margin-left: -9px;
+				height: 18px;
+				border-left: 6px solid @color-lighter;
+			}
+			&:after {
+				margin-left: 3px;
+			}
+		}
+		
+		&:hover, &:focus {
+			&:before, &:after {
+				border-left-color: @color-white;
+			}
+		}
 	}
 	
 	p {
 		position: absolute;
-		top: 5px;
-		right: 5px;
-		margin: 0;
+		top: 50%;
+		right: (@grid-gutter / 2);
+		margin: (20px * 1.4 / -2) 0 0;
+		.font(20px, 1.4, bold);
 	}
 	
 	h3, textarea {
 		margin: 0;
 		border: 0;
-		padding: 5px;
-		font: bold 20px/1.4 sans-serif;
+		padding: (@grid-gutter / 4);
+		.padding-top(0.5);
+		.padding-bottom(0.5);
+		background: transparent;
 		color: #333;
+		font: bold 20px/1.4 sans-serif;
 	}
 	
 	h3 + div {
+		overflow: hidden;
 		label {
 			display: none;
 		}
@@ -102,8 +246,14 @@ article {
 			position: absolute;
 			top: 0;
 			bottom: 0;
-			left: 130px;
-			right: 130px;
+			.left(0.5);
+			.right(1);
+			.margin-bottom(-1);
+			resize: none;
+			
+			&:focus {
+				outline: 0;
+			}
 		}
 	}
 	

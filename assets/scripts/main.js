@@ -295,7 +295,7 @@ var TimerListView = DateSpecificView.extend({
 		this.$el.empty();
 		
 		var label = $('<h2>').appendTo(this.$el),
-			logged = $('<p> logged</p>').appendTo(this.$el);
+			logged = $('<p> <span class="w">logged</span></p>').appendTo(this.$el);
 			
 		label.prepend(this.dateLabel.render().$el);
 		logged.prepend(this.totalLogged.render().$el);
@@ -378,7 +378,7 @@ var TimerItemView = DateSpecificView.extend({
 		this.$el.empty()
 			.append(this.description.render().$el);
 		
-		var logged = $('<p> logged</p>').appendTo(this.$el);
+		var logged = $('<p> <span class="w">logged</span></p>').appendTo(this.$el);
 		logged.prepend(this.logged.render().$el);
 		
 		this.$el.append(this.button.render().$el);
@@ -463,6 +463,8 @@ var TimerDescriptionLabel = Backbone.View.extend({
 				label: 'Timer description', 
 				placeholder: 'Have you been productive?',
 			});
+		
+		this.$el.addClass('hidden');
 		
 		input.render().on('blur', function () {
 			this.$el.removeClass('hidden');
