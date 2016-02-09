@@ -258,11 +258,14 @@ article {
 			&:before {
 				border-left-color: @color-lighter;
 			}
-		}
-
-		&:hover/*, &:focus*/ {
-			&:before, &:after {
-				border-left-color: @color-white;
+			
+			&:hover/*, &:focus*/ {
+				border-color: @color-lighter;
+				background: @color-lighter;
+				
+				&:before, &:after {
+					border-left-color: @color-white;
+				}
 			}
 		}
 	}

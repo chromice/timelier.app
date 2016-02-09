@@ -683,8 +683,12 @@ article button.inactive {
 article button.inactive:before {
   border-left-color: #888;
 }
-article button:hover:before,
-article button:hover:after {
+article button.inactive:hover {
+  border-color: #888;
+  background: #888;
+}
+article button.inactive:hover:before,
+article button.inactive:hover:after {
   border-left-color: #fafafa;
 }
 article p {
