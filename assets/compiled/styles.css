@@ -513,8 +513,7 @@ button {
   font-size: 0.75rem;
   text-transform: uppercase;
 }
-button:hover,
-button:focus {
+button:hover {
   border-color: #333;
   background: #333;
   color: #fafafa;
@@ -645,9 +644,7 @@ article button.started:after {
   margin-left: 3px;
 }
 article button:hover:before,
-article button:focus:before,
-article button:hover:after,
-article button:focus:after {
+article button:hover:after {
   border-left-color: #fafafa;
 }
 article p {
