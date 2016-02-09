@@ -10,7 +10,7 @@
 // = Shared variables, styles, and mixins =
 // ========================================
 
-@color-primary: #dd0000;
+@color-primary: #dd4444;
 
 @color-dark: #333;
 @color-normal: #555;
@@ -126,7 +126,15 @@ button {
 	button {
 		position: absolute;
 		.top(0.5);
-		.left((@grid-gutter / 2))
+		.left((@grid-gutter / 2));
+		
+		border-color: @color-primary;
+		color: @color-primary;
+		
+		&:hover/*, &:focus*/ {
+			background: @color-primary;
+			color: @color-white;
+		}
 	}
 }
 
@@ -164,6 +172,15 @@ article {
 	border-bottom: 1px solid @color-lightest;
 	background-color: @color-white;
 	
+	transition: background-color 80ms ease-out;
+	transition-property: background-color, border-color;
+	
+	&.active {
+		color: @color-white;
+		background: @color-primary;
+		border-bottom-color: darken(@color-primary, 10%);
+	}
+	
 	button {
 		@size: (@grid-gutter * 2);
 		
@@ -171,7 +188,7 @@ article {
 		top: 50%;
 		left: (@grid-gutter / 2);
 		border-radius: 50%;
-		border-color: @color-lighter;
+		border-color: @color-primary;
 		margin-top: (@size / -2);
 		width: @size;
 		height: @size;
@@ -183,14 +200,39 @@ article {
 			top: 50%;
 			left: 50%;
 			display: block;
+			border-left: 0px solid @color-primary;
 			content: '';
+		}
+		
+		&.started  {
+			border-color: @color-white;
+			
+			&:before, &:after {
+				margin-top: -9px;
+				margin-left: -9px;
+				height: 18px;
+				border-left-width: 6px;
+				border-left-color: @color-white;
+			}
+			&:after {
+				margin-left: 3px;
+			}
+			
+			&:hover/*, &:focus*/ {
+				border-color: @color-white;
+				background: @color-white;
+				
+				&:before, &:after {
+					border-left-color: @color-primary;
+				}
+			}
 		}
 		
 		&.paused, &.inactive {
 			&:before {
 				margin-top: -9px;
 				margin-left: -6px;
-				border-left: 17px solid @color-lighter;
+				border-left-width: 17px;
 				border-top: 9px solid transparent;
 				border-bottom: 9px solid transparent;
 			}
@@ -199,18 +241,25 @@ article {
 			}
 		}
 		
-		&.started  {
-			&:before, &:after {
-				margin-top: -9px;
-				margin-left: -9px;
-				height: 18px;
-				border-left: 6px solid @color-lighter;
-			}
-			&:after {
-				margin-left: 3px;
+		&.paused {
+			&:hover/*, &:focus*/ {
+				border-color: @color-primary;
+				background: @color-primary;
+				
+				&:before, &:after {
+					border-left-color: @color-white;
+				}
 			}
 		}
-		
+
+		&.inactive {
+			border-color: @color-lighter;
+			
+			&:before {
+				border-left-color: @color-lighter;
+			}
+		}
+
 		&:hover/*, &:focus*/ {
 			&:before, &:after {
 				border-left-color: @color-white;
@@ -236,6 +285,11 @@ article {
 		color: #333;
 		font: bold 20px/1.4 sans-serif;
 	}
+	&.active {
+		h3, textarea {
+			color: @color-white;
+		}
+	}
 	
 	h3 + div {
 		overflow: hidden;
@@ -258,8 +312,21 @@ article {
 	}
 	
 	h3.empty {
-		color: #888;
+		color: fadeout(@color-dark, 50%);
+		
 	}
+	textarea::placeholder {
+		color: fadeout(@color-dark, 70%);
+	}
+	&.active {
+		h3.empty {
+			color: fadeout(@color-white, 15%);
+		}
+		textarea::placeholder {
+			color: fadeout(@color-white, 40%);
+		}
+	}
+
 	h3.hidden {
 		visibility: hidden;
 	}

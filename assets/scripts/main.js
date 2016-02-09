@@ -371,13 +371,18 @@ var TimerItemView = DateSpecificView.extend({
 		this.description = new TimerDescriptionLabel({tagName: 'h3', model: this.model});
 		this.logged = new TimerValueLabel({date: this.date, model: this.model});
 		this.button = new TimerStartButton({date: this.date, model: this.model});
+		
+		this.listenTo(this.model, 'change:started_on', function (timer, started) {
+			this.$el.toggleClass('active', !!started && this.date.isToday());
+		});
 	},
 	
 	render: function () {
 		
 		this.$el.empty()
+			.toggleClass('active', !!this.model.get('started_on') && this.date.isToday())
 			.append(this.description.render().$el);
-		
+			
 		var logged = $('<p> <span class="w">logged</span></p>').appendTo(this.$el);
 		logged.prepend(this.logged.render().$el);
 		

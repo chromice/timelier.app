@@ -558,6 +558,12 @@ button:hover {
   top: 0.7rem;
   left: 1.86915888%;
   left: calc(0% + 0px + 10px);
+  border-color: #dd4444;
+  color: #dd4444;
+}
+#main > header button:hover {
+  background: #dd4444;
+  color: #fafafa;
 }
 /*
 	Day header
@@ -602,13 +608,20 @@ article {
   padding-top: 0;
   border-bottom: 1px solid #eee;
   background-color: #fafafa;
+  transition: background-color 80ms ease-out;
+  transition-property: background-color, border-color;
+}
+article.active {
+  color: #fafafa;
+  background: #dd4444;
+  border-bottom-color: #c92525;
 }
 article button {
   position: absolute;
   top: 50%;
   left: 10px;
   border-radius: 50%;
-  border-color: #888;
+  border-color: #dd4444;
   margin-top: -20px;
   width: 40px;
   height: 40px;
@@ -619,13 +632,36 @@ article button:after {
   top: 50%;
   left: 50%;
   display: block;
+  border-left: 0px solid #dd4444;
   content: '';
+}
+article button.started {
+  border-color: #fafafa;
+}
+article button.started:before,
+article button.started:after {
+  margin-top: -9px;
+  margin-left: -9px;
+  height: 18px;
+  border-left-width: 6px;
+  border-left-color: #fafafa;
+}
+article button.started:after {
+  margin-left: 3px;
+}
+article button.started:hover {
+  border-color: #fafafa;
+  background: #fafafa;
+}
+article button.started:hover:before,
+article button.started:hover:after {
+  border-left-color: #dd4444;
 }
 article button.paused:before,
 article button.inactive:before {
   margin-top: -9px;
   margin-left: -6px;
-  border-left: 17px solid #888;
+  border-left-width: 17px;
   border-top: 9px solid transparent;
   border-bottom: 9px solid transparent;
 }
@@ -633,15 +669,19 @@ article button.paused:after,
 article button.inactive:after {
   display: none;
 }
-article button.started:before,
-article button.started:after {
-  margin-top: -9px;
-  margin-left: -9px;
-  height: 18px;
-  border-left: 6px solid #888;
+article button.paused:hover {
+  border-color: #dd4444;
+  background: #dd4444;
 }
-article button.started:after {
-  margin-left: 3px;
+article button.paused:hover:before,
+article button.paused:hover:after {
+  border-left-color: #fafafa;
+}
+article button.inactive {
+  border-color: #888;
+}
+article button.inactive:before {
+  border-left-color: #888;
 }
 article button:hover:before,
 article button:hover:after {
@@ -668,6 +708,10 @@ article textarea {
   color: #333;
   font: bold 20px/1.4 sans-serif;
 }
+article.active h3,
+article.active textarea {
+  color: #fafafa;
+}
 article h3 + div {
   overflow: hidden;
 }
@@ -690,7 +734,34 @@ article h3 + div textarea:focus {
   outline: 0;
 }
 article h3.empty {
-  color: #888;
+  color: rgba(51, 51, 51, 0.5);
+}
+article textarea::-webkit-input-placeholder {
+  color: rgba(51, 51, 51, 0.3);
+}
+article textarea::-moz-placeholder {
+  color: rgba(51, 51, 51, 0.3);
+}
+article textarea:-ms-input-placeholder {
+  color: rgba(51, 51, 51, 0.3);
+}
+article textarea::placeholder {
+  color: rgba(51, 51, 51, 0.3);
+}
+article.active h3.empty {
+  color: rgba(250, 250, 250, 0.85);
+}
+article.active textarea::-webkit-input-placeholder {
+  color: rgba(250, 250, 250, 0.6);
+}
+article.active textarea::-moz-placeholder {
+  color: rgba(250, 250, 250, 0.6);
+}
+article.active textarea:-ms-input-placeholder {
+  color: rgba(250, 250, 250, 0.6);
+}
+article.active textarea::placeholder {
+  color: rgba(250, 250, 250, 0.6);
 }
 article h3.hidden {
   visibility: hidden;
