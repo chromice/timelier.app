@@ -263,6 +263,7 @@ var CalendarPane = Backbone.View.extend({
 	
 	startNewTimer: function (e) {
 		// TODO: Disable function for a second to prevent accidental double entry.
+		// TODO: Focus the description field to let user enter what they do.
 		var timer = new TimerModel({});
 		
 		this.collection.add(timer);
