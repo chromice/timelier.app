@@ -461,7 +461,7 @@ var TimerDescriptionLabel = Backbone.View.extend({
 	
 	edit: function (e) {
 		var input = new TextInputField({
-				original: this,
+				parent: this,
 				model: this.model,
 				property: 'description',
 			
@@ -484,15 +484,18 @@ var TextInputField = Backbone.View.extend({
 		'blur textarea': 'blur',
 		'change textarea': 'change',
 		'keyup textarea': 'change',
-		'keydown textarea': 'enter',
+		'keydown textarea': 'keydown',
 	},
 	
 	initialize: function (options) {
-		this.original = options.original;
+		this.parent = options.parent;
+		this.input = options.input || 'textarea';
 		this.property = options.property;
 		
 		this.label = options.label || '';
 		this.placeholder = options.placeholder || '';
+		
+		this.originalValue = this.model.get(this.property) || '';
 	},
 	
 	render: function () {
@@ -509,9 +512,11 @@ var TextInputField = Backbone.View.extend({
 		this.$el.empty()
 			.append(label)
 			.append(textarea)
-			.insertAfter(this.original.$el);
+			.insertAfter(this.parent.$el);
 		
-		textarea.on('focus', function () { this.select(); }).focus();
+		if (!value) {
+			textarea.focus();
+		}
 		
 		return this;
 	},
@@ -520,9 +525,14 @@ var TextInputField = Backbone.View.extend({
 		this.model.set(this.property, $(e.target).val());
 	},
 	
-	enter: function (e) {
-		if (e.which == 13 || e.keyCode == 13) {
-			this.blur();
+	keydown: function (e) {
+		var $target = $(e.target);
+		if (e.keyCode == 27) {
+			$target.val(this.originalValue);
+			this.change(e);
+			$target.blur();
+		} else if (e.keyCode == 13) {
+			$target.blur();
 		}
 	},
 	
