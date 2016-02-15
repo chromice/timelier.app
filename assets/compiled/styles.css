@@ -487,8 +487,8 @@ html {
 }
 header,
 article {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 13px;
+  padding-right: 13px;
 }
 /*
 	Headings
@@ -501,7 +501,7 @@ h2 {
 	Buttons
 */
 button {
-  padding: 0 10px;
+  padding: 0 13px;
   margin: -1px;
   border: 1px solid #555;
   border-radius: 12px;
@@ -556,8 +556,8 @@ button:hover {
   position: absolute;
   top: 14px;
   top: 0.7rem;
-  left: 1.86915888%;
-  left: calc(0% + 0px + 10px);
+  left: 2.42990654%;
+  left: calc(0% + 0px + 13px);
   border-color: #dd4444;
   color: #dd4444;
 }
@@ -600,10 +600,8 @@ section > header p {
 */
 article {
   position: relative;
-  padding-left: 10.37383178%;
-  padding-left: calc(10% + 2px);
-  padding-right: 20.74766355%;
-  padding-right: calc(20% + 4px);
+  padding-left: 70px;
+  padding-right: 108.5px;
   padding-bottom: 0;
   padding-top: 0;
   border-bottom: 1px solid #eee;
@@ -619,12 +617,12 @@ article.active {
 article button {
   position: absolute;
   top: 50%;
-  left: 10px;
+  left: 13px;
   border-radius: 50%;
   border-color: #dd4444;
-  margin-top: -20px;
-  width: 40px;
-  height: 40px;
+  margin-top: -22px;
+  width: 44px;
+  height: 44px;
 }
 article button:before,
 article button:after {
@@ -695,7 +693,7 @@ article h3,
 article textarea {
   margin: 0;
   border: 0;
-  padding: 5px;
+  padding: 0;
   padding-top: 14px;
   padding-top: 0.7rem;
   padding-bottom: 14px;
@@ -714,10 +712,8 @@ article h3 + div textarea {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 10.37383178%;
-  left: calc(10% + 2px);
-  right: 20.74766355%;
-  right: calc(20% + 4px);
+  left: 70px;
+  right: 108.5px;
   margin-bottom: -28px;
   margin-bottom: -1.4rem;
   resize: none;
@@ -729,7 +725,7 @@ article p,
 article p + div {
   position: absolute;
   top: 50%;
-  right: 10px;
+  right: 13px;
   margin: -14px 0 0;
 }
 article p,
@@ -737,7 +733,7 @@ article p + div > input {
   padding: 0;
   border: 0;
   background: transparent;
-  width: 4.125em;
+  width: 82.5px;
   font: 500 20px / 1.4 'Helvetica Neue', sans-serif;
   font-size: 1rem;
   text-align: right;

@@ -42,7 +42,7 @@
 @bolder-font-offset: 0.879;
 
 .use-baseline-grid(20px, 1.4, normal);
-.use-column-grid(535px, 20px, 5);
+.use-column-grid(535px, 26px, 5);
 
 /*
 	Sections
@@ -164,9 +164,12 @@ section > header {
 	Timer
 */
 article {
+	@button-size: (44px);
+	@timer-width: (4.125 * 20px);
+	
 	position: relative;
-	.padding-left(0.5);
-	.padding-right(1);
+	padding-left: (@grid-gutter + @button-size);
+	padding-right: (@grid-gutter + @timer-width);
 	padding-bottom: 0;
 	padding-top: 0;
 	border-bottom: 1px solid @color-lightest;
@@ -182,16 +185,14 @@ article {
 	}
 	
 	button {
-		@size: (@grid-gutter * 2);
-		
 		position: absolute;
 		top: 50%;
 		left: (@grid-gutter / 2);
 		border-radius: 50%;
 		border-color: @color-primary;
-		margin-top: (@size / -2);
-		width: @size;
-		height: @size;
+		margin-top: (@button-size / -2);
+		width: @button-size;
+		height: @button-size;
 		
 		.image-replaced();
 		
@@ -273,7 +274,7 @@ article {
 	h3, textarea {
 		margin: 0;
 		border: 0;
-		padding: (@grid-gutter / 4);
+		padding: 0;
 		.padding-top(0.5);
 		.padding-bottom(0.5);
 		background: transparent;
@@ -289,8 +290,8 @@ article {
 			position: absolute;
 			top: 0;
 			bottom: 0;
-			.left(0.5);
-			.right(1);
+			left: (@grid-gutter + @button-size);
+			right: (@grid-gutter + @timer-width);
 			.margin-bottom(-1);
 			resize: none;
 			
@@ -310,7 +311,7 @@ article {
 		padding: 0;
 		border: 0;
 		background: transparent;
-		width: 4.125em;
+		width: @timer-width;
 		.font(20px, 1.4, bold);
 		text-align: right;
 		

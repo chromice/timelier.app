@@ -53,11 +53,13 @@ var TimerModel = Backbone.Model.extend({
 	_pause: function () {
 		var start = new Date(this.get('started_on'));
 			
+		this.set('started_on', false);
+		
 		this.entries.add({
 			value: Math.ceil((Clock.now.getTime() - start.getTime()) / 1000)
 		});
 		
-		this.set('started_on', false);
+		this.trigger('enter');
 	},
 	
 	_start: function () {
@@ -627,8 +629,8 @@ var TimerValueLabel = DateSpecificView.extend({
 				} else if (time.test(value)) {
 					t = value.match(time);
 					value = (t[3] ? parseInt(t[3], 10) : 0) + 
-						(t[2] ? parseInt(t[2], 10) : 0) * 60 + 
-						(t[1] ? parseInt(t[1], 10) : 0) * 60 * 60;
+							(t[2] ? parseInt(t[2], 10) : 0) * 60 + 
+							(t[1] ? parseInt(t[1], 10) : 0) * 60 * 60;
 				} else {
 					return;
 				}
