@@ -270,14 +270,6 @@ article {
 		}
 	}
 	
-	p {
-		position: absolute;
-		top: 50%;
-		right: (@grid-gutter / 2);
-		margin: (20px * 1.4 / -2) 0 0;
-		.font(20px, 1.4, bold);
-	}
-	
 	h3, textarea {
 		margin: 0;
 		border: 0;
@@ -288,12 +280,6 @@ article {
 		color: #333;
 		font: bold 20px/1.4 sans-serif;
 	}
-	&.active {
-		h3, textarea {
-			color: @color-white;
-		}
-	}
-	
 	h3 + div {
 		overflow: hidden;
 		label {
@@ -314,6 +300,36 @@ article {
 		}
 	}
 	
+	p, p + div {
+		position: absolute;
+		top: 50%;
+		right: (@grid-gutter / 2);
+		margin: (20px * 1.4 / -2) 0 0;
+	}
+	p, p + div > input {
+		padding: 0;
+		border: 0;
+		background: transparent;
+		width: 4.125em;
+		.font(20px, 1.4, bold);
+		text-align: right;
+		
+		&:focus {
+			outline: 0;
+		}
+	}
+	p + div {
+		label {
+			visibility: hidden;
+		}
+	}
+	
+	&.active {
+		h3, textarea {
+			color: @color-white;
+		}
+	}
+	
 	h3.empty {
 		color: fadeout(@color-dark, 50%);
 		
@@ -330,7 +346,7 @@ article {
 		}
 	}
 
-	h3.hidden {
+	h3.hidden, p.hidden {
 		visibility: hidden;
 	}
 }

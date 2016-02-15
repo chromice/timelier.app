@@ -691,14 +691,6 @@ article button.inactive:hover:before,
 article button.inactive:hover:after {
   border-left-color: #fafafa;
 }
-article p {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  margin: -14px 0 0;
-  font: 500 20px / 1.4 'Helvetica Neue', sans-serif;
-  font-size: 1rem;
-}
 article h3,
 article textarea {
   margin: 0;
@@ -711,10 +703,6 @@ article textarea {
   background: transparent;
   color: #333;
   font: bold 20px/1.4 sans-serif;
-}
-article.active h3,
-article.active textarea {
-  color: #fafafa;
 }
 article h3 + div {
   overflow: hidden;
@@ -736,6 +724,34 @@ article h3 + div textarea {
 }
 article h3 + div textarea:focus {
   outline: 0;
+}
+article p,
+article p + div {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  margin: -14px 0 0;
+}
+article p,
+article p + div > input {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  width: 4.125em;
+  font: 500 20px / 1.4 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+  text-align: right;
+}
+article p:focus,
+article p + div > input:focus {
+  outline: 0;
+}
+article p + div label {
+  visibility: hidden;
+}
+article.active h3,
+article.active textarea {
+  color: #fafafa;
 }
 article h3.empty {
   color: rgba(51, 51, 51, 0.5);
@@ -767,7 +783,8 @@ article.active textarea:-ms-input-placeholder {
 article.active textarea::placeholder {
   color: rgba(250, 250, 250, 0.6);
 }
-article h3.hidden {
+article h3.hidden,
+article p.hidden {
   visibility: hidden;
 }
 

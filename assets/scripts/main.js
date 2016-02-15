@@ -22,7 +22,23 @@ var TimerModel = Backbone.Model.extend({
 		Backbone.Model.apply(this, arguments);
 	},
 	
+	initialize: function (attributes) {
+		this.entries.on('add', function () {
+			this.trigger('enter');
+		}, this);
+	},
+	
 	// -------------- //
+	
+	enter: function (value, date) {
+		date = date || Clock.now;
+		
+		this.entries.add({
+			logged_on: date.toISOString(),
+			manually: true,
+			value: value - this.loggedOnDate(date),
+		});
+	},
 	
 	toggle: function () {
 		var started = this.get('started_on');
@@ -461,79 +477,83 @@ var TimerDescriptionLabel = Backbone.View.extend({
 	
 	edit: function (e) {
 		var input = new TextInputField({
-				parent: this,
-				model: this.model,
-				property: 'description',
-			
+				input: 'textarea',
+				value: this.model.get('description'),
 				label: 'Timer description', 
 				placeholder: 'Have you been productive?',
 			});
 		
 		this.$el.addClass('hidden');
 		
-		input.render().on('blur', function () {
-			this.$el.removeClass('hidden');
-			input.remove();
-		}, this);
+		input
+			.on('change', function (value) {
+				this.model.set('description', value);
+			}, this)
+			.on('blur', function () {
+				this.$el.removeClass('hidden');
+				input.remove();
+			}, this)
+			.render().$el.insertAfter(this.$el);
+		
+		input.focus();
 	},
 });
 
 var TextInputField = Backbone.View.extend({
 	tagName: 'div',
 	events: {
-		'blur textarea': 'blur',
-		'change textarea': 'change',
-		'keyup textarea': 'change',
-		'keydown textarea': 'keydown',
+		'blur textarea, input': 'blur',
+		'change textarea, input': 'change',
+		'keyup textarea, input': 'change',
+		'keydown textarea, input': 'keydown',
 	},
 	
 	initialize: function (options) {
-		this.parent = options.parent;
-		this.input = options.input || 'textarea';
-		this.property = options.property;
-		
+		this.input = options.input === 'input' ? 'input' : 'textarea';
+		this.value = options.value || '';
 		this.label = options.label || '';
 		this.placeholder = options.placeholder || '';
-		
-		this.originalValue = this.model.get(this.property) || '';
 	},
 	
 	render: function () {
-		var value = this.model.get(this.property) || '',
-			field_id = this.model.cid + '-' + this.property,
+		var field_id = _.uniqueId('input'),
 			label = $('<label>').text(this.label).attr({
 				'for': field_id,
 			}),
-			textarea = $('<textarea>').val(value).attr({
+			input = $('<' + this.input + '>').val(this.value).attr({
 				'id': field_id,
 				'placeholder': this.placeholder,
+				'type': 'text',
 			});
 			
 		this.$el.empty()
 			.append(label)
-			.append(textarea)
-			.insertAfter(this.parent.$el);
+			.append(input);
 		
-		if (!value) {
-			textarea.focus();
-		}
+		input.on('focus', function () { this.select(); });
 		
 		return this;
 	},
 	
 	change: function (e) {
-		this.model.set(this.property, $(e.target).val());
+		this.trigger('change', $(e.target).val());
 	},
 	
 	keydown: function (e) {
 		var $target = $(e.target);
+		
 		if (e.keyCode == 27) {
-			$target.val(this.originalValue);
+			$target.val(this.value);
 			this.change(e);
 			$target.blur();
 		} else if (e.keyCode == 13) {
+			this.trigger('enter', $target.val());
 			$target.blur();
 		}
+	},
+	
+	focus: function () {
+		this.$el.find(this.input).focus();
 	},
 	
 	blur: function () {
@@ -543,12 +563,21 @@ var TextInputField = Backbone.View.extend({
 
 var TimerValueLabel = DateSpecificView.extend({
 	tagName: 'time',
+	events: {
+		'click': 'edit',
+	},
 	
 	initialize: function () {
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
 		if (this.date.isToday()) {
 			Clock.on('tick:second', this.render, this);
+		}
+		
+		if (this.model) {
+			this.model.on('enter', this.render, this);
+		} else {
+			this.collection.on('enter', this.render, this);
 		}
 	},
 	
@@ -566,6 +595,53 @@ var TimerValueLabel = DateSpecificView.extend({
 			.text(this._duration(logged));
 		
 		return this;
+	},
+	
+	// -------------- //
+	
+	edit: function (e) {
+		if (this.collection) {
+			return;
+		}
+		
+		var input = new TextInputField({
+				input: 'input',
+				value: this._duration(this.model.loggedOnDate(this.date)),
+				label: 'Logged time', 
+				placeholder: this._duration(0),
+			});
+		
+		this.$el.parent().addClass('hidden');
+		
+		input
+			.on('enter', function (value) {
+				var decimal = /^(\d+)?(\.\d+)?$/,
+					time = /^(\d+)(?:\:(\d+))?(?:\:(\d+))?$/;
+				
+				value = value.trim();
+				
+				if (!value) {
+					return;
+				} else if (decimal.test(value)) {
+					value = parseFloat(value) * 60 * 60;
+				} else if (time.test(value)) {
+					t = value.match(time);
+					value = (t[3] ? parseInt(t[3], 10) : 0) + 
+						(t[2] ? parseInt(t[2], 10) : 0) * 60 + 
+						(t[1] ? parseInt(t[1], 10) : 0) * 60 * 60;
+				} else {
+					return;
+				}
+				
+				this.model.enter(value, this.date);
+			}, this)
+			.on('blur', function () {
+				this.$el.parent().removeClass('hidden');
+				input.remove();
+			}, this)
+			.render().$el.insertAfter(this.$el.parent());
+		
+		input.focus();
 	},
 	
 	// -------------- //
