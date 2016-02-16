@@ -752,31 +752,39 @@ article.active textarea {
 article h3.empty {
   color: rgba(51, 51, 51, 0.5);
 }
-article textarea::-webkit-input-placeholder {
+article textarea::-webkit-input-placeholder,
+article input::-webkit-input-placeholder {
   color: rgba(51, 51, 51, 0.3);
 }
-article textarea::-moz-placeholder {
+article textarea::-moz-placeholder,
+article input::-moz-placeholder {
   color: rgba(51, 51, 51, 0.3);
 }
-article textarea:-ms-input-placeholder {
+article textarea:-ms-input-placeholder,
+article input:-ms-input-placeholder {
   color: rgba(51, 51, 51, 0.3);
 }
-article textarea::placeholder {
+article textarea::placeholder,
+article input::placeholder {
   color: rgba(51, 51, 51, 0.3);
 }
 article.active h3.empty {
   color: rgba(250, 250, 250, 0.85);
 }
-article.active textarea::-webkit-input-placeholder {
+article.active textarea::-webkit-input-placeholder,
+article.active input::-webkit-input-placeholder {
   color: rgba(250, 250, 250, 0.6);
 }
-article.active textarea::-moz-placeholder {
+article.active textarea::-moz-placeholder,
+article.active input::-moz-placeholder {
   color: rgba(250, 250, 250, 0.6);
 }
-article.active textarea:-ms-input-placeholder {
+article.active textarea:-ms-input-placeholder,
+article.active input:-ms-input-placeholder {
   color: rgba(250, 250, 250, 0.6);
 }
-article.active textarea::placeholder {
+article.active textarea::placeholder,
+article.active input::placeholder {
   color: rgba(250, 250, 250, 0.6);
 }
 article h3.hidden,
