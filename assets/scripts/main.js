@@ -23,8 +23,23 @@ var TimerModel = Backbone.Model.extend({
 	},
 	
 	initialize: function (attributes) {
+		if (this.id) {
+			this.entries.url = 'entries/' + this.id;
+			this.entries.fetch();
+		} else {
+			this.once('sync', function (timer) {
+				this.entries.url = 'entries/' + this.id;
+			}, this);
+		}
+		
 		this.entries.on('add', function () {
 			this.trigger('enter');
+		}, this);
+		
+		this.on('destroy', function () {
+			this.entries.each(function (entry) {
+				if (entry) entry.destroy();
+			});
 		}, this);
 	},
 	
@@ -33,14 +48,22 @@ var TimerModel = Backbone.Model.extend({
 	enter: function (value, date) {
 		date = date || Clock.now;
 		
-		this.entries.add({
+		if (value === 0) {
+			if (this.loggedTotal() === this.loggedOnDate(date)) {
+				this.destroy();
+				return;
+			} else {
+				this.trigger('enter:zero', date);
+			}
+		}
+		
+		this.entries.create({
 			logged_on: date.toISOString(),
 			manually: true,
 			value: value - this.loggedOnDate(date),
 		});
 	},
-	
-	toggle: function () {
+		toggle: function () {
 		var started = this.get('started_on');
 		
 		if (started) {
@@ -48,6 +71,8 @@ var TimerModel = Backbone.Model.extend({
 		} else {
 			this._start();
 		}
+		
+		this.save();
 	},
 	
 	_pause: function () {
@@ -55,7 +80,7 @@ var TimerModel = Backbone.Model.extend({
 			
 		this.set('started_on', false);
 		
-		this.entries.add({
+		this.entries.create({
 			value: Math.ceil((Clock.now.getTime() - start.getTime()) / 1000)
 		});
 		
@@ -73,18 +98,33 @@ var TimerModel = Backbone.Model.extend({
 			entries = this.entries.filter(function (entry) {
 				return datetime(entry.get('logged_on')) === datetime(date);
 			}),
-			logged = _.reduce(entries, function (memo, entry) {
+			entered = _.reduce(entries, function (memo, entry) {
 				return memo + entry.get('value');
 			}, 0),
-			started_on = this.get('started_on');
+			started = this.get('started_on');
 		
-		if (started_on && day.isToday()) {
-			var start = new Date(started_on);
+		if (started && day.isToday()) {
+			var start = new Date(started);
 			
-			logged+= Math.ceil((Clock.now.getTime() - start.getTime()) / 1000);
+			entered+= Math.ceil((Clock.now.getTime() - start.getTime()) / 1000);
 		}
 		
-		return logged;
+		return entered;
+	},
+	
+	loggedTotal: function () {
+		var entered = this.entries.reduce(function (memo, entry) {
+				return memo + entry.get('value');
+			}, 0),
+			started = this.get('started_on');
+		
+		if (started) {
+			var start = new Date(started);
+			
+			entered+= Math.ceil((Clock.now.getTime() - start.getTime()) / 1000);
+		}
+		
+		return entered;
 	},
 });
 
@@ -104,6 +144,8 @@ var EntryModel = Backbone.Model.extend({
 // ===============
 
 var TimerCollection = Backbone.Collection.extend({
+	localStorage: new Backbone.LocalStorage('timers'),
+	
 	model: TimerModel,
 	comparator: function (timer) {
 		var started = timer.get('started_on'),
@@ -127,11 +169,21 @@ var TimerCollection = Backbone.Collection.extend({
 	}
 }, {
 	all: function () {
-		return boostrapTimerCollection();
+		if (true) {
+			var timers = new TimerCollection();
+			
+			timers.fetch();
+			
+			return timers;
+		} else {
+			return boostrapTimerCollection();
+		}
 	},
 });
 
 var EntryCollection = Backbone.Collection.extend({
+	localStorage: new Backbone.LocalStorage('timer_entries'),
+	
 	model: EntryModel,
 	comparator: function (entry) {
 		var logged_on = new Date(entry.get('logged_on'));
@@ -155,17 +207,17 @@ var AppContainer = Backbone.View.extend({
 		this.router = options.router;
 		
 		this.calendar = new CalendarPane();
-		this.description = new DescriptionPane();
-		this.time = new TimePane();
+		// this.description = new DescriptionPane();
+		// this.time = new TimePane();
 		
 		this.render();
 	},
 	
 	render: function () {
 		this.$el.empty()
-			.append(this.calendar.render().$el)
-			.append(this.description.render().$el)
-			.append(this.time.render().$el);
+			.append(this.calendar.render().$el);
+			// .append(this.description.render().$el)
+			// .append(this.time.render().$el);
 		
 		return this;
 	},
@@ -308,10 +360,15 @@ var TimerListView = DateSpecificView.extend({
 		this.totalLogged = new TimerValueLabel({date: this.date, collection: this.collection});
 		
 		this.listenTo(this.collection, 'add', this.render);
+		this.listenTo(this.collection, 'remove', this.render);
 	},
 	
 	render: function () {
 		this.$el.empty();
+		
+		if (this.collection.length === 0) {
+			return this;
+		}
 		
 		var label = $('<h2>').appendTo(this.$el),
 			logged = $('<p> <span class="w">logged</span></p>').appendTo(this.$el);
@@ -489,6 +546,9 @@ var TimerDescriptionLabel = Backbone.View.extend({
 		this.$el.addClass('hidden');
 		
 		input
+			.on('enter', function (value) {
+				this.model.set('description', value).save();
+			}, this)
 			.on('change', function (value) {
 				this.model.set('description', value);
 			}, this)
@@ -527,6 +587,7 @@ var TextInputField = Backbone.View.extend({
 				'id': field_id,
 				'placeholder': this.placeholder,
 				'type': 'text',
+				'autocomplete': 'off',
 			});
 			
 		this.$el.empty()
@@ -714,19 +775,19 @@ var Application = Backbone.Router.extend({
 	// -------------- //
 	
 	main: function () {
-		console.log('List all timers');
+		// console.log('List all timers');
 		
 		this.application.showCalendar();
 	},
 	
 	description: function (id) {
-		console.log('Edit details for timer #' + id);
+		// console.log('Edit details for timer #' + id);
 		
 		this.application.showDescripion(id);
 	},
 	
 	time: function (id, date) {
-		console.log('Change logged time for timer #' + id);
+		// console.log('Change logged time for timer #' + id);
 		
 		this.application.showTime(id, date);
 	},
@@ -742,7 +803,7 @@ $(function () {
 	var app = new Application();
 	
 	// Knock sync out
-	Backbone.sync = noSync;
+	// Backbone.sync = noSync;
 	
 	// Start application
 	Backbone.history.start();
@@ -852,6 +913,7 @@ function datetime(date) {
 }
 
 function noSync(method, model, options) {
+	console.log('Sync this:', method, model, options);
 	var id = model.id || Math.floor(Math.random() * 100000);
 	options.success({id: id}, 'status', {});
 }
