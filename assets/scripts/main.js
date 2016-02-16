@@ -679,8 +679,8 @@ var TimerValueLabel = DateSpecificView.extend({
 		
 		input
 			.on('enter', function (value) {
-				var decimal = /^(\d+)?(\.\d+)?$/,
-					time = /^(\d+)(?:\:(\d+))?(?:\:(\d+))?$/;
+				var decimal = /^(\d*)(\.\d+)?$/,
+					time = /^(\d*)(?:\:(\d+))?(?:\:(\d+))?$/;
 				
 				value = value.trim();
 				
