@@ -1,0 +1,30 @@
+{
+    "main": "public/index.html",
+    "name": "Timelier",
+    "description": "Simple timer",
+    "version": "1.0.0",
+    "plugins" : {
+                "Dock":"Dock",
+                "Dialog":"Dialog",
+                "Fonts" : "Fonts",
+                "Clipboard":"Clipboard",
+                "StatusItem":"StatusItem",
+                "Task" : "Task",
+                "Sound" : "Sound",
+                "Defaults" : "Defaults",
+                "File" : "File"
+                 },
+    "window" : {
+        "title" : "Timelier",
+        "width" : 500,
+        "height" : 600,
+        "position": "right",
+        "min_width": 500,
+        "min_height": 400,
+        "max_width": 500,
+        "max_height": 2000,
+        "opaque": 0,
+        "alpha": 1
+    }
+  
+}
