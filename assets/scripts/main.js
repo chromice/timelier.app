@@ -864,7 +864,7 @@ _.extend(Date.prototype, {
 		return this._en_weekdays[this.getProperDay()];
 	},
 	getMonthName: function () {
-		return this._en_months[this.getProperDay()];
+		return this._en_months[this.getMonth()];
 	},
 	getHumanDate: function () {
 		return this.getDayName() + ', ' + this.getDate() + ' ' + this.getMonthName() + ' ' + this.getFullYear();
