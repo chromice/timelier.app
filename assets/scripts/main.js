@@ -63,7 +63,8 @@ var TimerModel = Backbone.Model.extend({
 			value: value - this.loggedOnDate(date),
 		});
 	},
-		toggle: function () {
+	
+	toggle: function () {
 		var started = this.get('started_on');
 		
 		if (started) {
