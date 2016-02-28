@@ -163,7 +163,7 @@
     }
     
     if([params objectForKey:@"alpha"]) {
-        NSColor *backgroundColor = [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.0 alpha:[[params objectForKey:@"alpha"] doubleValue]];
+        NSColor *backgroundColor = [NSColor colorWithDeviceRed:0.98 green:0.98 blue:0.98 alpha:[[params objectForKey:@"alpha"] doubleValue]];
         [[self window] setBackgroundColor: backgroundColor];
     }
     

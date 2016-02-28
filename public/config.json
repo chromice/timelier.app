@@ -17,12 +17,12 @@
     "window" : {
         "title" : "Timelier",
         "width" : 500,
-        "height" : 600,
+        "height" : 500,
         "position": "right",
         "min_width": 500,
-        "min_height": 400,
+        "min_height": 500,
         "max_width": 500,
-        "max_height": 2000,
+        "max_height": 1000,
         "opaque": 0,
         "alpha": 1
     }
