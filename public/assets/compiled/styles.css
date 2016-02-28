@@ -548,12 +548,6 @@ button:hover {
 /*
 	App header
 */
-#main {
-  padding-top: 14px;
-  padding-top: 0.7rem;
-  padding-bottom: 14px;
-  padding-bottom: 0.7rem;
-}
 #main > header {
   position: fixed;
   top: 0;
