@@ -10,7 +10,6 @@
 		2237E64A192B0177001E1393 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2237E649192B0177001E1393 /* Cocoa.framework */; };
 		2237E67E192B0186001E1393 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2237E67D192B0186001E1393 /* WebKit.framework */; };
 		2237E680192B018D001E1393 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2237E67F192B018D001E1393 /* JavaScriptCore.framework */; };
-		2237E6EF192BAF85001E1393 /* public in Resources */ = {isa = PBXBuildFile; fileRef = 2237E6EE192BAF85001E1393 /* public */; };
 		226AE65D193AA8FC00B15FB7 /* Sound.m in Sources */ = {isa = PBXBuildFile; fileRef = 226AE65C193AA8FC00B15FB7 /* Sound.m */; };
 		22A676E71944B140002F81FB /* File.m in Sources */ = {isa = PBXBuildFile; fileRef = 22A676E61944B140002F81FB /* File.m */; };
 		22B1CF2B1937734B00D2C294 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B1CEF51937734B00D2C294 /* AppDelegate.m */; };
@@ -38,12 +37,14 @@
 		22B1CF411937734B00D2C294 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22B1CF251937734B00D2C294 /* InfoPlist.strings */; };
 		22B1CF421937734B00D2C294 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22B1CF271937734B00D2C294 /* Images.xcassets */; };
 		22B1CF431937734B00D2C294 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B1CF281937734B00D2C294 /* main.m */; };
-		22B1CF441937734B00D2C294 /* MG-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22B1CF291937734B00D2C294 /* MG-Info.plist */; };
+		22B1CF441937734B00D2C294 /* Timelier-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22B1CF291937734B00D2C294 /* Timelier-Info.plist */; };
 		22BE36ED193B7F8800D8199F /* Defaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BE36EC193B7F8800D8199F /* Defaults.m */; };
+		D1A78CDC1C836B5700784D77 /* public in Resources */ = {isa = PBXBuildFile; fileRef = D1A78CDB1C836B5700784D77 /* public */; };
+		D1A78CDE1C836B8500784D77 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D1A78CDD1C836B8500784D77 /* assets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2237E646192B0177001E1393 /* MG.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MG.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2237E646192B0177001E1393 /* Timelier.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timelier.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2237E649192B0177001E1393 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		2237E64C192B0177001E1393 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		2237E64D192B0177001E1393 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -51,7 +52,6 @@
 		2237E668192B0177001E1393 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		2237E67D192B0186001E1393 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2237E67F192B018D001E1393 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		2237E6EE192BAF85001E1393 /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
 		226AE65B193AA8FC00B15FB7 /* Sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Sound.h; sourceTree = "<group>"; };
 		226AE65C193AA8FC00B15FB7 /* Sound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sound.m; sourceTree = "<group>"; };
 		22A676E51944B140002F81FB /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = File.h; sourceTree = "<group>"; };
@@ -102,10 +102,12 @@
 		22B1CF261937734B00D2C294 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		22B1CF271937734B00D2C294 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		22B1CF281937734B00D2C294 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		22B1CF291937734B00D2C294 /* MG-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MG-Info.plist"; sourceTree = "<group>"; };
-		22B1CF2A1937734B00D2C294 /* MG-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MG-Prefix.pch"; sourceTree = "<group>"; };
+		22B1CF291937734B00D2C294 /* Timelier-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Timelier-Info.plist"; sourceTree = "<group>"; };
+		22B1CF2A1937734B00D2C294 /* Timelier-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Timelier-Prefix.pch"; sourceTree = "<group>"; };
 		22BE36EB193B7F8800D8199F /* Defaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Defaults.h; sourceTree = "<group>"; };
 		22BE36EC193B7F8800D8199F /* Defaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Defaults.m; sourceTree = "<group>"; };
+		D1A78CDB1C836B5700784D77 /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		D1A78CDD1C836B8500784D77 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +127,8 @@
 		2237E63D192B0177001E1393 = {
 			isa = PBXGroup;
 			children = (
-				2237E6EE192BAF85001E1393 /* public */,
+				D1A78CDD1C836B8500784D77 /* assets */,
+				D1A78CDB1C836B5700784D77 /* public */,
 				22B1CEF31937734B00D2C294 /* MacGap */,
 				2237E648192B0177001E1393 /* Frameworks */,
 				2237E647192B0177001E1393 /* Products */,
@@ -135,7 +138,7 @@
 		2237E647192B0177001E1393 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2237E646192B0177001E1393 /* MG.app */,
+				2237E646192B0177001E1393 /* Timelier.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -248,8 +251,8 @@
 				22B1CF251937734B00D2C294 /* InfoPlist.strings */,
 				22B1CF271937734B00D2C294 /* Images.xcassets */,
 				22B1CF281937734B00D2C294 /* main.m */,
-				22B1CF291937734B00D2C294 /* MG-Info.plist */,
-				22B1CF2A1937734B00D2C294 /* MG-Prefix.pch */,
+				22B1CF291937734B00D2C294 /* Timelier-Info.plist */,
+				22B1CF2A1937734B00D2C294 /* Timelier-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -266,9 +269,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2237E645192B0177001E1393 /* MG */ = {
+		2237E645192B0177001E1393 /* Timelier */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2237E677192B0177001E1393 /* Build configuration list for PBXNativeTarget "MG" */;
+			buildConfigurationList = 2237E677192B0177001E1393 /* Build configuration list for PBXNativeTarget "Timelier" */;
 			buildPhases = (
 				2237E642192B0177001E1393 /* Sources */,
 				2237E643192B0177001E1393 /* Frameworks */,
@@ -278,9 +281,9 @@
 			);
 			dependencies = (
 			);
-			name = MG;
+			name = Timelier;
 			productName = MG;
-			productReference = 2237E646192B0177001E1393 /* MG.app */;
+			productReference = 2237E646192B0177001E1393 /* Timelier.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -291,7 +294,7 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 			};
-			buildConfigurationList = 2237E641192B0177001E1393 /* Build configuration list for PBXProject "MG" */;
+			buildConfigurationList = 2237E641192B0177001E1393 /* Build configuration list for PBXProject "Timelier" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -304,7 +307,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2237E645192B0177001E1393 /* MG */,
+				2237E645192B0177001E1393 /* Timelier */,
 			);
 		};
 /* End PBXProject section */
@@ -314,13 +317,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22B1CF441937734B00D2C294 /* MG-Info.plist in Resources */,
-				2237E6EF192BAF85001E1393 /* public in Resources */,
+				22B1CF441937734B00D2C294 /* Timelier-Info.plist in Resources */,
+				D1A78CDE1C836B8500784D77 /* assets in Resources */,
 				22B1CF401937734B00D2C294 /* Credits.rtf in Resources */,
 				22B1CF421937734B00D2C294 /* Images.xcassets in Resources */,
 				22B1CF2D1937734B00D2C294 /* MainWindow.xib in Resources */,
 				22B1CF2C1937734B00D2C294 /* MainMenu.xib in Resources */,
 				22B1CF411937734B00D2C294 /* InfoPlist.strings in Resources */,
+				D1A78CDC1C836B5700784D77 /* public in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,10 +475,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.framework *.gch *.xcode* *.xcassets (*) .DS_Store CVS .svn .git .hg *.pbproj *.pbxproj node_modules";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MacGap/MG-Prefix.pch";
-				INFOPLIST_FILE = "MacGap/MG-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "MacGap/Timelier-Prefix.pch";
+				INFOPLIST_FILE = "MacGap/Timelier-Info.plist";
+				PRODUCT_NAME = Timelier;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -484,10 +489,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				EXCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "*.nib *.lproj *.framework *.gch *.xcode* *.xcassets (*) .DS_Store CVS .svn .git .hg *.pbproj *.pbxproj node_modules";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MacGap/MG-Prefix.pch";
-				INFOPLIST_FILE = "MacGap/MG-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				GCC_PREFIX_HEADER = "MacGap/Timelier-Prefix.pch";
+				INFOPLIST_FILE = "MacGap/Timelier-Info.plist";
+				PRODUCT_NAME = Timelier;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -495,7 +501,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2237E641192B0177001E1393 /* Build configuration list for PBXProject "MG" */ = {
+		2237E641192B0177001E1393 /* Build configuration list for PBXProject "Timelier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2237E675192B0177001E1393 /* Debug */,
@@ -504,7 +510,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2237E677192B0177001E1393 /* Build configuration list for PBXNativeTarget "MG" */ = {
+		2237E677192B0177001E1393 /* Build configuration list for PBXNativeTarget "Timelier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2237E678192B0177001E1393 /* Debug */,
