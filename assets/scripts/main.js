@@ -24,12 +24,12 @@ var TimerModel = Backbone.Model.extend({
 	
 	initialize: function (attributes) {
 		if (this.id) {
-			// this.entries.url = 'entries/' + this.id;
+			this.entries.url = 'entries/' + this.id;
 			this.entries.localStorage = new Backbone.LocalStorage('timer_entries_' + this.id);
 			this.entries.fetch();
 		} else {
 			this.once('sync', function (timer) {
-				// this.entries.url = 'entries/' + this.id;
+				this.entries.url = 'entries/' + this.id;
 				this.entries.localStorage = new Backbone.LocalStorage('timer_entries_' + this.id);
 			}, this);
 		}
@@ -172,7 +172,7 @@ var TimerCollection = Backbone.Collection.extend({
 	}
 }, {
 	all: function () {
-		if (true) {
+		if (false) {
 			var timers = new TimerCollection();
 			
 			timers.fetch();
@@ -185,7 +185,6 @@ var TimerCollection = Backbone.Collection.extend({
 });
 
 var EntryCollection = Backbone.Collection.extend({
-	
 	model: EntryModel,
 	comparator: function (entry) {
 		var logged_on = new Date(entry.get('logged_on'));
@@ -271,7 +270,7 @@ var CalendarPane = Backbone.View.extend({
 		this.$el.empty()
 			.append('<header>' +
 				'<h1>Timers</h1>' +
-				'<button id="start-new">Start new</button>' +
+				'<button id="start-new">Start new timer</button>' +
 			'</header>');
 			
 		_.each(this.dates, function (date) {
@@ -414,7 +413,7 @@ var CalendarDateLabel = DateSpecificView.extend({
 	render: function () {
 		this.$el
 			.attr('datetime', this.date.getMachineDate())
-			.text(this.label());
+			.html(this.label());
 		
 		return this;
 	},
@@ -436,7 +435,7 @@ var CalendarDateLabel = DateSpecificView.extend({
 			return 'Last ' + this.date.getDayName();
 		}
 		
-		return this.date.getHumanDate();
+		return this.date.getShortHumanDate();
 	},
 });
 
@@ -658,7 +657,7 @@ var TimerValueLabel = DateSpecificView.extend({
 		
 		this.$el
 			.attr('datetime', this._duration(logged, true))
-			.text(this._duration(logged));
+			.html(this._duration(logged).replace(':', '<span>:</span>'));
 		
 		return this;
 	},
@@ -717,10 +716,10 @@ var TimerValueLabel = DateSpecificView.extend({
 			hours = Math.floor(minutes / 60);
 	
 		if (machine) {
-			return 'PT' + hours + 'H' + (minutes % 60) + 'M' + (seconds % 60) + 'S';
+			return 'PT' + hours + 'H' + (minutes % 60) + 'M'/* + (seconds % 60) + 'S'*/;
 		}
 	
-		return hours + ':' + (minutes % 60).pad(2) + ':' + (seconds % 60).pad(2);
+		return hours.pad(2) + ':' + (minutes % 60).pad(2)/* + ':' + (seconds % 60).pad(2)*/;
 	}
 });
 
@@ -870,6 +869,9 @@ _.extend(Date.prototype, {
 	},
 	getHumanDate: function () {
 		return this.getDayName() + ', ' + this.getDate() + ' ' + this.getMonthName() + ' ' + this.getFullYear();
+	},
+	getShortHumanDate: function () {
+		return this.getDayName().substr(0, 3) + ', ' + this.getDate() + ' ' + this.getMonthName().substr(0, 3) + '&rsquo;' + (this.getFullYear() + '').substr(2, 2);
 	},
 	getMachineDate: function () {
 		return this.getFullYear() + '-' + (this.getMonth() + 1).pad(2) + '-' + this.getDate().pad(2);
