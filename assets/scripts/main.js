@@ -542,7 +542,7 @@ var TimerDescriptionLabel = Backbone.View.extend({
 				input: 'textarea',
 				value: this.model.get('description'),
 				label: 'Timer description', 
-				placeholder: 'Have you been productive?',
+				placeholder: 'What have you been up to?',
 			});
 		
 		this.$el.addClass('hidden');
