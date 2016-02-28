@@ -24,11 +24,13 @@ var TimerModel = Backbone.Model.extend({
 	
 	initialize: function (attributes) {
 		if (this.id) {
-			this.entries.url = 'entries/' + this.id;
+			// this.entries.url = 'entries/' + this.id;
+			this.entries.localStorage = new Backbone.LocalStorage('timer_entries_' + this.id);
 			this.entries.fetch();
 		} else {
 			this.once('sync', function (timer) {
-				this.entries.url = 'entries/' + this.id;
+				// this.entries.url = 'entries/' + this.id;
+				this.entries.localStorage = new Backbone.LocalStorage('timer_entries_' + this.id);
 			}, this);
 		}
 		
@@ -183,7 +185,6 @@ var TimerCollection = Backbone.Collection.extend({
 });
 
 var EntryCollection = Backbone.Collection.extend({
-	localStorage: new Backbone.LocalStorage('timer_entries'),
 	
 	model: EntryModel,
 	comparator: function (entry) {
