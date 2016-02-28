@@ -147,6 +147,7 @@ var EntryModel = Backbone.Model.extend({
 // ===============
 
 var TimerCollection = Backbone.Collection.extend({
+	url: '/timers',
 	localStorage: new Backbone.LocalStorage('timers'),
 	
 	model: TimerModel,
@@ -172,7 +173,7 @@ var TimerCollection = Backbone.Collection.extend({
 	}
 }, {
 	all: function () {
-		if (false) {
+		if (true) {
 			var timers = new TimerCollection();
 			
 			timers.fetch();
@@ -185,6 +186,7 @@ var TimerCollection = Backbone.Collection.extend({
 });
 
 var EntryCollection = Backbone.Collection.extend({
+	url: '/entries',
 	model: EntryModel,
 	comparator: function (entry) {
 		var logged_on = new Date(entry.get('logged_on'));

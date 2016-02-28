@@ -739,6 +739,7 @@ article h3 + div textarea {
   bottom: 0;
   left: 60px;
   right: 82.5px;
+  width: calc(100% - (26px + 34px + 82.5px));
   margin-bottom: -28px;
   margin-bottom: -1.4rem;
   resize: none;
