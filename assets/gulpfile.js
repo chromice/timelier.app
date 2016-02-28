@@ -11,7 +11,7 @@ var
 		'main.js'
 	],
 
-	destination_dir = './compiled',
+	destination_dir = '../public/',
 	asset_root = '/assets/compiled',
 
 	src_dir = './';

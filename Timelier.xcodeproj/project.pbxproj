@@ -40,7 +40,6 @@
 		22B1CF441937734B00D2C294 /* Timelier-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 22B1CF291937734B00D2C294 /* Timelier-Info.plist */; };
 		22BE36ED193B7F8800D8199F /* Defaults.m in Sources */ = {isa = PBXBuildFile; fileRef = 22BE36EC193B7F8800D8199F /* Defaults.m */; };
 		D1A78CDC1C836B5700784D77 /* public in Resources */ = {isa = PBXBuildFile; fileRef = D1A78CDB1C836B5700784D77 /* public */; };
-		D1A78CDE1C836B8500784D77 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = D1A78CDD1C836B8500784D77 /* assets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -318,7 +317,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				22B1CF441937734B00D2C294 /* Timelier-Info.plist in Resources */,
-				D1A78CDE1C836B8500784D77 /* assets in Resources */,
 				22B1CF401937734B00D2C294 /* Credits.rtf in Resources */,
 				22B1CF421937734B00D2C294 /* Images.xcassets in Resources */,
 				22B1CF2D1937734B00D2C294 /* MainWindow.xib in Resources */,
