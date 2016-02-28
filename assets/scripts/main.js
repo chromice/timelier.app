@@ -272,7 +272,7 @@ var CalendarPane = Backbone.View.extend({
 		this.$el.empty()
 			.append('<header>' +
 				'<h1>Timers</h1>' +
-				'<button id="start-new">Start new timer</button>' +
+				'<button id="start-new">Start a new timer</button>' +
 			'</header>');
 			
 		_.each(this.dates, function (date) {

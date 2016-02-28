@@ -10,7 +10,9 @@
 // = Shared variables, styles, and mixins =
 // ========================================
 
-@color-primary: #dd4444;
+@color-primary: #ff4352;
+@color-start: #ff2a68;
+@color-end: #ff5e3a;
 
 @color-dark: #333;
 @color-normal: #555;
@@ -81,7 +83,7 @@ button {
 	border: 1px solid @color-normal;
 	border-radius: (15px * 1.6 / 2);
 	background: transparent;
-	.font(15px, 1.6, light);
+	.font(15px, 1.6, normal);
 	text-transform: uppercase;
 	
 	&:hover/*, &:focus*/ {
@@ -189,7 +191,8 @@ article {
 	&.active {
 		color: @color-white;
 		background: @color-primary;
-		border-bottom-color: darken(@color-primary, 10%);
+		background: linear-gradient( to top, @color-start, @color-end);
+		border-bottom-color: darken(@color-end, 15%);
 		
 		time > span {
 			animation: tick 1s linear infinite;

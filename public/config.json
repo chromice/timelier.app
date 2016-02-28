@@ -19,10 +19,10 @@
         "width" : 500,
         "height" : 500,
         "position": "right",
-        "min_width": 500,
-        "min_height": 500,
-        "max_width": 500,
-        "max_height": 1000,
+        "min_width": 400,
+        "min_height": 400,
+        "max_width": 600,
+        "max_height": 2000,
         "opaque": 0,
         "alpha": 1
     }

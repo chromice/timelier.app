@@ -533,7 +533,7 @@ button {
   border: 1px solid #555;
   border-radius: 12px;
   background: transparent;
-  font: 300 15px / 1.6 'Helvetica Neue', sans-serif;
+  font: 400 15px / 1.6 'Helvetica Neue', sans-serif;
   font-size: 0.75rem;
   text-transform: uppercase;
 }
@@ -561,12 +561,12 @@ button:hover {
   text-align: center;
 }
 #main > header button {
-  border-color: #dd4444;
+  border-color: #ff4352;
   background: rgba(250, 250, 250, 0.95);
-  color: #dd4444;
+  color: #ff4352;
 }
 #main > header button:hover {
-  background: #dd4444;
+  background: #ff4352;
   color: #fafafa;
 }
 /*
@@ -624,8 +624,9 @@ article {
 }
 article.active {
   color: #fafafa;
-  background: #dd4444;
-  border-bottom-color: #c92525;
+  background: #ff4352;
+  background: linear-gradient(to top, #ff2a68, #ff5e3a);
+  border-bottom-color: #ed2b00;
 }
 article.active time > span {
   -webkit-animation: tick 1s linear infinite;
@@ -637,7 +638,7 @@ article button {
   top: 50%;
   left: 13px;
   border-radius: 50%;
-  border-color: #dd4444;
+  border-color: #ff4352;
   margin-top: -17px;
   width: 34px;
   height: 34px;
@@ -648,7 +649,7 @@ article button:after {
   top: 50%;
   left: 50%;
   display: block;
-  border-left: 0px solid #dd4444;
+  border-left: 0px solid #ff4352;
   content: '';
 }
 article button.started {
@@ -671,7 +672,7 @@ article button.started:hover {
 }
 article button.started:hover:before,
 article button.started:hover:after {
-  border-left-color: #dd4444;
+  border-left-color: #ff4352;
 }
 article button.paused:before,
 article button.inactive:before {
@@ -686,8 +687,8 @@ article button.inactive:after {
   display: none;
 }
 article button.paused:hover {
-  border-color: #dd4444;
-  background: #dd4444;
+  border-color: #ff4352;
+  background: #ff4352;
 }
 article button.paused:hover:before,
 article button.paused:hover:after {
