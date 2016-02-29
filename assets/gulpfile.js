@@ -12,7 +12,7 @@ var
 	],
 
 	destination_dir = '../public/',
-	asset_root = '/assets/compiled',
+	asset_root = './',
 
 	src_dir = './';
 
