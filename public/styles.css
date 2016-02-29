@@ -548,8 +548,13 @@ button:hover {
 /*
 	App header
 */
+#main {
+  padding-top: 7px;
+  padding-top: 0.35rem;
+}
 #main > header {
-  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -558,6 +563,8 @@ button:hover {
   padding-top: 0.35rem;
   padding-bottom: 7px;
   padding-bottom: 0.35rem;
+  margin-bottom: -14px;
+  margin-bottom: -0.7rem;
   text-align: center;
 }
 #main > header button {
@@ -569,12 +576,20 @@ button:hover {
   background: #ff4352;
   color: #fafafa;
 }
+@media screen and (max-width: 480px) {
+  #main > header button span {
+    display: none;
+  }
+}
 /*
 	Day header
 */
 section {
   padding-top: 28px;
   padding-top: 1.4rem;
+}
+header + section {
+  padding-top: 0;
 }
 section > header {
   position: -webkit-sticky;
@@ -813,4 +828,4 @@ article p.hidden {
   visibility: hidden;
 }
 
-/*# sourceMappingURL=/assets/compiled/styles.css.map */
+/*# sourceMappingURL=.//styles.css.map */

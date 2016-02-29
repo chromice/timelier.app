@@ -111,17 +111,17 @@ button {
 	App header
 */
 #main {
-	// .padding-top(0.5);
-	// .padding-bottom(0.5);
+	.padding-top(0.25);
 }
 #main > header {
-	position: fixed;
+	position: sticky;
 	top: 0;
 	left: 0;
 	right: 0;
 	z-index: 100;
 	.padding-top(0.25);
 	.padding-bottom(0.25);
+	.margin-bottom(-0.5);
 	text-align: center;
 	
 	h1 {
@@ -137,7 +137,14 @@ button {
 			background: @color-primary;
 			color: @color-white;
 		}
+		
+		@media screen and (max-width: 480px) {
+			span {
+				display: none;
+			}
+		}
 	}
+	
 }
 
 /*
@@ -145,6 +152,10 @@ button {
 */
 section {
 	.padding-top(1);
+	
+	header + & {
+		.padding-top(0);
+	}
 }
 section > header {
 	position: sticky;
