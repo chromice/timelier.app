@@ -324,6 +324,8 @@ var CalendarPane = Backbone.View.extend({
 		this.collection.add(timer);
 		
 		timer.toggle();
+		
+		window.scrollTo(0,0);
 	},
 	_onTimerToggled: function (timer, started_on) {
 		// Active timer paused?
@@ -507,6 +509,10 @@ var TimerStartButton = DateSpecificView.extend({
 	
 	toggle: function (e) {
 		this.model.toggle();
+		
+		if (!this.date.isToday()) {
+			window.scrollTo(0,0);
+		}
 	},
 });
 
