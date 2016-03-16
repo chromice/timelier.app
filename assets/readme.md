@@ -12,9 +12,7 @@ You may need to install Gulp globally:
 
     [sudo] npm install -g gulp
 
-    ## Running tasks
-
-## Building your assets
+## Running tasks
 
 Build everything:
 

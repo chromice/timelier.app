@@ -483,6 +483,7 @@ var TimerStartButton = DateSpecificView.extend({
 		DateSpecificView.prototype.initialize.apply(this, arguments);
 		
 		Clock.on('tick:day', this.render, this);
+		// TODO: Tick toggle timer on/off on day change
 		this.listenTo(this.model, 'change:started_on', this.render);
 	},
 	
